@@ -8,7 +8,6 @@
 #include "kcolorschememanager.h"
 #include "kcolorschememanager_p.h"
 
-#include "kcolorschememenu.h"
 #include "kcolorschememodel.h"
 
 #include <KConfigGroup>
@@ -16,9 +15,9 @@
 #include <KSharedConfig>
 #include <kcolorscheme.h>
 
-#include <QApplication>
 #include <QDir>
 #include <QFileInfo>
+#include <QGuiApplication>
 #include <QIcon>
 #include <QPainter>
 #include <QStandardPaths>

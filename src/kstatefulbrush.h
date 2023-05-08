@@ -37,7 +37,7 @@ class KStatefulBrushPrivate;
  * new state. Using KStatefulBrush will allow your application to inherit these
  * changes "for free", without even recompiling.
  */
-class KCONFIGWIDGETS_EXPORT KStatefulBrush
+class KCOLORSCHEME_EXPORT KStatefulBrush
 {
 public:
     /**

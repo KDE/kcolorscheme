@@ -8,7 +8,7 @@
 #ifndef KCOLORSCHEMEMODEL_H
 #define KCOLORSCHEMEMODEL_H
 
-#include <kconfigwidgets_export.h>
+#include "kcolorscheme_export.h"
 
 #include <QAbstractListModel>
 #include <QObject>

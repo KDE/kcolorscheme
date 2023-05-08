@@ -9,7 +9,7 @@
 #define KCOLORSCHEME_H
 
 #include <KSharedConfig>
-#include <kconfigwidgets_export.h>
+#include "kcolorscheme_export.h"
 
 #include <QExplicitlySharedDataPointer>
 
@@ -52,7 +52,7 @@ class KColorSchemePrivate;
  * KColorScheme::BackgroundRole, KColorScheme::DecorationRole,
  * KColorScheme::ShadeRole
  */
-class KCONFIGWIDGETS_EXPORT KColorScheme
+class KCOLORSCHEME_EXPORT KColorScheme
 {
 public:
     /**

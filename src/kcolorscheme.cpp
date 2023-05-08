@@ -8,7 +8,7 @@
 #include "kcolorscheme.h"
 #include "kcolorschemehelpers_p.h"
 
-#include "kconfigwidgets_debug.h"
+#include "kcolorscheme_debug.h"
 
 #include <KColorUtils>
 #include <KConfig>
@@ -320,7 +320,7 @@ KColorSchemePrivate::KColorSchemePrivate(const KSharedConfigPtr &config, QPalett
         defaultDecoColors = loadDecorationColors(config->group("Colors:Window"), defaultDecorationColors);
         break;
     case KColorScheme::NColorSets:
-        qCWarning(KCONFIG_WIDGETS_LOG) << "ColorSet::NColorSets is not a valid color set value to pass to KColorScheme::KColorScheme";
+        qCWarning(KCOLORSCHEME) << "ColorSet::NColorSets is not a valid color set value to pass to KColorScheme::KColorScheme";
         [[fallthrough]];
     case KColorScheme::View:
         groupName = "Colors:View";

@@ -8,7 +8,7 @@
 #ifndef KCOLORSCHEMEMANAGER_H
 #define KCOLORSCHEMEMANAGER_H
 
-#include <kconfigwidgets_export.h>
+#include <kcolorscheme_export.h>
 
 #include <QObject>
 #include <memory>
@@ -52,7 +52,7 @@ class KColorSchemeManagerPrivate;
  *
  * @since 5.0
  */
-class KCONFIGWIDGETS_EXPORT KColorSchemeManager : public QObject
+class KCOLORSCHEME_EXPORT KColorSchemeManager : public QObject
 {
     Q_OBJECT
 public:
