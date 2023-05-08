@@ -11,6 +11,7 @@
 #include "kcolorschememodel.h"
 
 #include <KConfigGroup>
+#include <KConfigGui>
 #include <KLocalizedString>
 #include <KSharedConfig>
 #include <kcolorscheme.h>
@@ -21,6 +22,14 @@
 #include <QIcon>
 #include <QPainter>
 #include <QStandardPaths>
+
+// ensure we are linking KConfigGui, so QColor I/O from KConfig works
+static bool init()
+{
+    auto p = &KConfigGui::sessionConfig;
+    return p;
+}
+static bool s_init = init();
 
 constexpr int defaultSchemeRow = 0;
 
