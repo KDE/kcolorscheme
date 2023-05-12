@@ -29,8 +29,8 @@ class KColorSchemeManagerPrivate;
  * a dark color scheme even if the default is a light scheme. Since version 5.67 it also allows
  * going back to following the system color scheme.
  *
- * The KColorSchemeManager provides access to a QAbstractItemModel which holds all the available
- * schemes. A possible usage looks like the following:
+ * The model() member function provides access to the KColorSchemeModel that the KColorSchemeManager uses
+ * which holds all the available color schemes. A possible usage looks like the following:
  *
  * @code
  * KColorSchemeManager *schemes = new KColorSchemeManager(this);
@@ -39,16 +39,13 @@ class KColorSchemeManagerPrivate;
  * connect(view, &QListView::activated, schemes, &KColorSchemeManager::activateScheme);
  * @endcode
  *
- * In addition the KColorSchemeManager also provides the possibility to create a KActionMenu populated
- * with all the available color schemes in an action group. If one of the actions is selected the
- * scheme is applied instantly:
+ * A convenience function that creates a KActionMenu that contains and activates color schemes exists
+ * in KColorSchemeMenu::createMenu
  *
- * @code
- * QToolButton *button = new QToolButton();
- * KColorSchemeManager *schemes = new KColorSchemeManager(this);
- * KActionMenu *menu = schemes->createSchemeSelectionMenu(QStringLiteral("Oxygen"), button);
- * button->setMenu(menu->menu());
- * @endcode
+ * By default KColorSchemeManager remembers the activated color scheme and restores it on the next
+ * start of the application. Use setAutosaveChanges() to change this behavior.
+ *
+ * @see KColorSchemeMenu::createMenu, KColorSchemeModel
  *
  * @since 5.0
  */
@@ -67,6 +64,7 @@ public:
      * has an empty Qt::UserRole.
      *
      * @return Model of all available color schemes.
+     * @see KColorSchemeModel
      */
     QAbstractItemModel *model() const;
     /**
