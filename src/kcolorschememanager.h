@@ -33,10 +33,12 @@ class KColorSchemeManagerPrivate;
  * which holds all the available color schemes. A possible usage looks like the following:
  *
  * @code
- * KColorSchemeManager *schemes = new KColorSchemeManager(this);
+ * KColorSchemeManager *manager = new KColorSchemeManager(this);
  * QListView *view = new QListView(this);
  * view->setModel(schemes->model());
- * connect(view, &QListView::activated, schemes, &KColorSchemeManager::activateScheme);
+ * connect(view, &QListView::activated, manager, [manager] (const QModelIndex &index) {
+ *     manager->activateScheme(index.data(KColorSchemeModel::IdRole).toString());
+ *  });
  * @endcode
  *
  * A convenience function that creates a KActionMenu that contains and activates color schemes exists
@@ -67,14 +69,6 @@ public:
      * @see KColorSchemeModel
      */
     QAbstractItemModel *model() const;
-    /**
-     * Returns the model index for the scheme with the given @p name. If no such
-     * scheme exists an invalid index is returned. If you pass an empty
-     * string the index that is equivalent to going back to following the system scheme is returned
-     * for versions 5.67 and newer.
-     * @see model
-     */
-    QModelIndex indexForScheme(const QString &name) const;
 
     /**
      * Saves the color scheme to config file. The scheme is saved by default whenever it's changed.
@@ -94,7 +88,7 @@ public:
     void setAutosaveChanges(bool autosaveChanges);
 
     /**
-     * Returns the id of the currently active scheme or an empty string if the default
+     * Returns the id of the currently active scheme or an empty string if the system
      * scheme is active.
      *
      * @since 5.107
@@ -103,16 +97,14 @@ public:
 
 public Q_SLOTS:
     /**
-     * @brief Activates the KColorScheme identified by the provided @p index.
+     * @brief Activates the KColorScheme identified by the provided @p schemeId.
      *
      * Installs the KColorScheme as the QApplication's QPalette.
      *
-     * @param index The index for the KColorScheme to activate.
-     * The index must reference the QAbstractItemModel provided by @link model @endlink. Since
-     * version 5.67 passing an invalid index activates the system scheme.
-     * @see model()
+     * @param schemeId The id of the KColorScheme to activate.
+     * Passing an empty string activates the system scheme.
      */
-    void activateScheme(const QModelIndex &index);
+    void activateScheme(const QString &schemeId);
 
 private:
     std::unique_ptr<KColorSchemeManagerPrivate> const d;

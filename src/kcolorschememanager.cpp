@@ -27,8 +27,6 @@
 KCONFIGGUI_EXPORT int initKConfigGroupGui();
 static int s_init = initKConfigGroupGui();
 
-constexpr int defaultSchemeRow = 0;
-
 void KColorSchemeManagerPrivate::activateSchemeInternal(const QString &colorSchemePath)
 {
     // hint for plasma-integration to synchronize the color scheme with the window manager/compositor
@@ -124,9 +122,13 @@ KColorSchemeManager::KColorSchemeManager(QObject *parent)
             schemePath = d->automaticColorSchemePath();
         }
     } else {
-        const auto index = indexForScheme(scheme);
-        schemePath = index.data(KColorSchemeModel::PathRole).toString();
-        d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
+        for (int i = 1; i < d->model->rowCount(); ++i) {
+            if (auto index = d->model->index(i); index.data(KColorSchemeModel::NameRole).toString() == scheme) {
+                schemePath = index.data(KColorSchemeModel::PathRole).toString();
+                d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
+                break;
+            }
+        }
     }
     d->activateSchemeInternal(schemePath);
 }
@@ -156,26 +158,12 @@ void KColorSchemeManager::setAutosaveChanges(bool autosaveChanges)
     d->m_autosaveChanges = autosaveChanges;
 }
 
-QModelIndex KColorSchemeManager::indexForScheme(const QString &name) const
+void KColorSchemeManager::activateScheme(const QString &schemeId)
 {
-    // Empty string is mapped to "reset to the system scheme"
-    if (name.isEmpty()) {
-        return d->model->index(defaultSchemeRow);
-    }
-    for (int i = 1; i < d->model->rowCount(); ++i) {
-        QModelIndex index = d->model->index(i);
-        if (index.data(KColorSchemeModel::NameRole).toString() == name) {
-            return index;
-        }
-    }
-    return QModelIndex();
-}
+    auto index = d->indexForSchemeId(schemeId);
+    const bool isDefaultEntry = index.data(KColorSchemeModel::IdRole).toString().isEmpty();
 
-void KColorSchemeManager::activateScheme(const QModelIndex &index)
-{
-    const bool isDefaultEntry = index.data(KColorSchemeModel::PathRole).toString().isEmpty();
-
-    if (index.isValid() && index.model() == d->model.get() && !isDefaultEntry) {
+    if (index.isValid() && !isDefaultEntry) {
         d->activateSchemeInternal(index.data(KColorSchemeModel::PathRole).toString());
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
         if (d->m_autosaveChanges) {
