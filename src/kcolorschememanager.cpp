@@ -110,7 +110,7 @@ KColorSchemeManager::KColorSchemeManager(QObject *parent)
 
     QString schemePath;
 
-    if (scheme.isEmpty() || scheme == QLatin1String("Default")) {
+    if (scheme.isEmpty()) {
         // Color scheme might be already set from a platform theme
         // This is used for example by QGnomePlatform that can set color scheme
         // matching GNOME settings. This avoids issues where QGnomePlatform sets
@@ -122,13 +122,9 @@ KColorSchemeManager::KColorSchemeManager(QObject *parent)
             schemePath = d->automaticColorSchemePath();
         }
     } else {
-        for (int i = 1; i < d->model->rowCount(); ++i) {
-            if (auto index = d->model->index(i); index.data(KColorSchemeModel::NameRole).toString() == scheme) {
-                schemePath = index.data(KColorSchemeModel::PathRole).toString();
-                d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
-                break;
-            }
-        }
+        auto index = d->indexForSchemeId(scheme);
+        schemePath = index.data(KColorSchemeModel::PathRole).toString();
+        d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
     }
     d->activateSchemeInternal(schemePath);
 }
@@ -167,7 +163,7 @@ void KColorSchemeManager::activateScheme(const QString &schemeId)
         d->activateSchemeInternal(index.data(KColorSchemeModel::PathRole).toString());
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
         if (d->m_autosaveChanges) {
-            saveSchemeToConfigFile(index.data(KColorSchemeModel::NameRole).toString());
+            saveSchemeToConfigFile(index.data(KColorSchemeModel::IdRole).toString());
         }
     } else {
         d->activateSchemeInternal(d->automaticColorSchemePath());

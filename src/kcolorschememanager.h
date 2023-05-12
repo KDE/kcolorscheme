@@ -76,7 +76,7 @@ public:
      *
      * @since 5.89
      */
-    void saveSchemeToConfigFile(const QString &schemeName) const;
+    void saveSchemeToConfigFile(const QString &schemeId) const;
     /**
      * Sets color scheme autosaving. Default value is @c true.
      * If this is set to @c false, the scheme is not going to be remembered when the
