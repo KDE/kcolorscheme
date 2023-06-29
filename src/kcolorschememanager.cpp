@@ -202,3 +202,5 @@ QString KColorSchemeManager::activeSchemeId() const
 {
     return d->m_activatedScheme;
 }
+
+#include "moc_kcolorschememanager.cpp"
