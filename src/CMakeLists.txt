@@ -1,23 +1,23 @@
 # SPDX-FileCopyrightText: 2023 David Redondo <kde@david-redondo.de>
 # SPDX-License-Identifier: BSD-2-Clause
 
-add_library(KF6ColorScheme)
-add_library(KF6::ColorScheme ALIAS KF6ColorScheme)
+add_library(KF5ColorScheme)
+add_library(KF5::ColorScheme ALIAS KF5ColorScheme)
 
-set_target_properties(KF6ColorScheme PROPERTIES
+set_target_properties(KF5ColorScheme PROPERTIES
     VERSION     ${KCOLORSCHEME_VERSION}
     SOVERSION   ${KCOLORSCHEME_SOVERSION}
     EXPORT_NAME ColorScheme
 )
 
-target_sources(KF6ColorScheme PRIVATE
+target_sources(KF5ColorScheme PRIVATE
   kcolorscheme.cpp
   kcolorschememanager.cpp
   kcolorschememodel.cpp
   kstatefulbrush.cpp
 )
 
-ecm_qt_declare_logging_category(KF6ColorScheme
+ecm_qt_declare_logging_category(KF5ColorScheme
     HEADER kcolorscheme_debug.h
     IDENTIFIER KCOLORSCHEME
     CATEGORY_NAME kf.colorscheme
@@ -25,7 +25,7 @@ ecm_qt_declare_logging_category(KF6ColorScheme
     EXPORT KCOLORSCHEME
 )
 
-ecm_generate_export_header(KF6ColorScheme
+ecm_generate_export_header(KF5ColorScheme
     BASE_NAME KColorScheme
     GROUP_BASE_NAME KF
     VERSION ${KF_VERSION}
@@ -35,16 +35,16 @@ ecm_generate_export_header(KF6ColorScheme
     EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
 )
 
-target_include_directories(KF6ColorScheme INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KColorScheme>")
+target_include_directories(KF5ColorScheme INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KColorScheme>")
 
-target_link_libraries(KF6ColorScheme
+target_link_libraries(KF5ColorScheme
   PUBLIC
-    KF6::ConfigCore
-    Qt6::Gui
+    KF5::ConfigCore
+    Qt5::Gui
   PRIVATE
-    KF6::ConfigGui # ### this one is not directly used but has to be loaded in order for QColor I/O from KConfig to work!
-    KF6::GuiAddons # KColorScheme uses KColorUtils
-    KF6::I18n # For action and widget texts
+    KF5::ConfigGui # ### this one is not directly used but has to be loaded in order for QColor I/O from KConfig to work!
+    KF5::GuiAddons # KColorScheme uses KColorUtils
+    KF5::I18n # For action and widget texts
 )
 
 ecm_generate_headers(KColorScheme_HEADERS
@@ -57,7 +57,7 @@ ecm_generate_headers(KColorScheme_HEADERS
   REQUIRED_HEADERS KColorScheme_HEADERS
 )
 
-install(TARGETS KF6ColorScheme EXPORT KF6ColorSchemeTargets ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5ColorScheme EXPORT KF5ColorSchemeTargets ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/kcolorscheme_export.h
@@ -74,9 +74,9 @@ ecm_qt_install_logging_categories(
 
 if(BUILD_QCH)
     ecm_add_qch(
-        KF6ColorScheme_QCH
+        KF5ColorScheme_QCH
         NAME KColorScheme
-        BASE_NAME KF6ColorScheme
+        BASE_NAME KF5ColorScheme
         VERSION ${KF_VERSION}
         ORG_DOMAIN org.kde
         SOURCES # using only public headers, to cover only public API
@@ -84,7 +84,7 @@ if(BUILD_QCH)
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         IMAGE_DIRS "${CMAKE_SOURCE_DIR}/docs/pics"
         LINK_QCHS
-            KF6GuiAddons_QCH
+            KF5GuiAddons_QCH
         INCLUDE_DIRS
             ${CMAKE_CURRENT_BINARY_DIR}
         BLANK_MACROS
@@ -105,5 +105,5 @@ if(BUILD_QCH)
 endif()
 
 include(ECMGeneratePriFile)
-ecm_generate_pri_file(BASE_NAME KColorScheme LIB_NAME KF6ColorScheme DEPS "KGuiAddons KConfigGui" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KColorScheme)
+ecm_generate_pri_file(BASE_NAME KColorScheme LIB_NAME KF5ColorScheme DEPS "KGuiAddons KConfigGui" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KColorScheme)
 install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})

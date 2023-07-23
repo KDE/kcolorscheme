@@ -24,8 +24,12 @@
 #include <QStandardPaths>
 
 // ensure we are linking KConfigGui, so QColor I/O from KConfig works
-KCONFIGGUI_EXPORT int initKConfigGroupGui();
-static int s_init = initKConfigGroupGui();
+static bool init()
+{
+    auto p = &KConfigGui::sessionConfig;
+    return p;
+}
+static bool s_init = init();
 
 constexpr int defaultSchemeRow = 0;
 
