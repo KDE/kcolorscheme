@@ -53,7 +53,7 @@ ecm_generate_headers(KColorScheme_HEADERS
   KColorSchemeManager
   KColorSchemeModel
   KStatefulBrush
- 
+
   REQUIRED_HEADERS KColorScheme_HEADERS
 )
 

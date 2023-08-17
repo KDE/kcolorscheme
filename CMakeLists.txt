@@ -55,14 +55,14 @@ add_definitions(-DTRANSLATION_DOMAIN=\"kcolorscheme6\")
 ki18n_install(po)
 
 add_subdirectory(src)
-if (BUILD_TESTING)
+if(BUILD_TESTING)
     add_subdirectory(autotests)
 endif()
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6ColorScheme")
 
-if (BUILD_QCH)
+if(BUILD_QCH)
     ecm_install_qch_export(
         TARGETS KF6ColorScheme_QCH
         FILE KF6ColorSchemeQchTargets.cmake
@@ -87,10 +87,10 @@ install(FILES
   COMPONENT Devel
 )
 
-install(EXPORT KF6ColorSchemeTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KF6ColorSchemeTargets.cmake NAMESPACE KF6:: )
+install(EXPORT KF6ColorSchemeTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KF6ColorSchemeTargets.cmake NAMESPACE KF6::)
 
 install(FILES
-   ${kcolorscheme_version_header}
+  ${kcolorscheme_version_header}
   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KColorScheme COMPONENT Devel
 )
 
