@@ -14,8 +14,7 @@ portingAid: false
 deprecated: false
 release: true
 libraries:
- - qmake: KColorScheme
-   cmake: "KF6::ColorScheme"
+ - cmake: "KF6::ColorScheme"
 cmakename: KF6ColorScheme
 
 public_lib: true
