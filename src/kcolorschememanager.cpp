@@ -107,7 +107,7 @@ KColorSchemeManager::KColorSchemeManager(QObject *parent)
 #endif
 
     KSharedConfigPtr config = KSharedConfig::openConfig();
-    KConfigGroup cg(config, "UiSettings");
+    KConfigGroup cg(config, QStringLiteral("UiSettings"));
     const QString scheme = cg.readEntry("ColorScheme", QString());
 
     QString schemePath;
@@ -193,7 +193,7 @@ void KColorSchemeManager::activateScheme(const QModelIndex &index)
 void KColorSchemeManager::saveSchemeToConfigFile(const QString &schemeName) const
 {
     KSharedConfigPtr config = KSharedConfig::openConfig();
-    KConfigGroup cg(config, "UiSettings");
+    KConfigGroup cg(config, QStringLiteral("UiSettings"));
     cg.writeEntry("ColorScheme", KLocalizedString::removeAcceleratorMarker(schemeName));
     cg.sync();
 }

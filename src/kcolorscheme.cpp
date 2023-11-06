@@ -275,55 +275,55 @@ static DecorationColors loadDecorationColors(const KConfigGroup &group, const De
 
 KColorSchemePrivate::KColorSchemePrivate(const KSharedConfigPtr &config, QPalette::ColorGroup state, KColorScheme::ColorSet set)
 {
-    const char *groupName = nullptr;
+    QString groupName;
     SerializedColors defaultColors;
     DecorationColors defaultDecoColors = defaultDecorationColors;
     QColor tint;
     switch (set) {
     case KColorScheme::Window:
-        groupName = "Colors:Window";
+        groupName = QStringLiteral("Colors:Window");
         defaultColors = defaultWindowColors;
         break;
     case KColorScheme::Button:
-        groupName = "Colors:Button";
+        groupName = QStringLiteral("Colors:Button");
         defaultColors = defaultButtonColors;
         break;
     case KColorScheme::Selection: {
-        const KConfigGroup inactiveEffectGroup(config, "ColorEffects:Inactive");
+        const KConfigGroup inactiveEffectGroup(config, QStringLiteral("ColorEffects:Inactive"));
         // NOTE: keep this in sync with kdebase/workspace/kcontrol/colors/colorscm.cpp
         const bool inactiveSelectionEffect = inactiveEffectGroup.readEntry("ChangeSelectionColor", inactiveEffectGroup.readEntry("Enable", true));
         // if enabled, inactive/disabled uses Window colors instead, ala gtk
         // ...except tinted with the Selection:NormalBackground color so it looks more like selection
         if (state == QPalette::Active || (state == QPalette::Inactive && !inactiveSelectionEffect)) {
-            groupName = "Colors:Selection";
+            groupName = QStringLiteral("Colors:Selection");
            defaultColors = defaultSelectionColors;
         } else if (state == QPalette::Inactive) {
-            groupName = "Colors:Window";
+            groupName = QStringLiteral("Colors:Window");
             defaultColors = defaultWindowColors;
-            tint = config->group("Colors:Selection").readEntry("BackgroundNormal", defaultSelectionColors.NormalBackground);
+            tint = config->group(QStringLiteral("Colors:Selection")).readEntry("BackgroundNormal", defaultSelectionColors.NormalBackground);
         } else { // disabled (...and still want this branch when inactive+disabled exists)
-            groupName = "Colors:Window";
+            groupName = QStringLiteral("Colors:Window");
             defaultColors = defaultWindowColors;
         }
     } break;
     case KColorScheme::Tooltip:
-        groupName = "Colors:Tooltip";
+        groupName = QStringLiteral("Colors:Tooltip");
         defaultColors = defaultTooltipColors;
         break;
     case KColorScheme::Complementary:
-        groupName = "Colors:Complementary";
+        groupName = QStringLiteral("Colors:Complementary");
         defaultColors = defaultComplementaryColors;
         break;
     case KColorScheme::Header:
-        groupName = "Colors:Header";
-        defaultColors = loadSerializedColors(config->group("Colors:Window"), defaultHeaderColors);
-        defaultDecoColors = loadDecorationColors(config->group("Colors:Window"), defaultDecorationColors);
+        groupName = QStringLiteral("Colors:Header");
+        defaultColors = loadSerializedColors(config->group(QStringLiteral("Colors:Window")), defaultHeaderColors);
+        defaultDecoColors = loadDecorationColors(config->group(QStringLiteral("Colors:Window")), defaultDecorationColors);
         break;
     case KColorScheme::NColorSets:
         qCWarning(KCOLORSCHEME) << "ColorSet::NColorSets is not a valid color set value to pass to KColorScheme::KColorScheme";
         [[fallthrough]];
     case KColorScheme::View:
-        groupName = "Colors:View";
+        groupName = QStringLiteral("Colors:View");
         defaultColors = defaultViewColors;
         break;
     }
@@ -331,7 +331,7 @@ KColorSchemePrivate::KColorSchemePrivate(const KSharedConfigPtr &config, QPalett
     KConfigGroup cfg(config, groupName);
     bool hasInactivePalette = false;
     if (state == QPalette::Inactive) {
-        KConfigGroup inactiveGroup = KConfigGroup(&cfg, "Inactive");
+        KConfigGroup inactiveGroup = KConfigGroup(&cfg, QStringLiteral("Inactive"));
         if (inactiveGroup.exists()) {
             cfg = inactiveGroup;
             hasInactivePalette = true;
@@ -456,7 +456,7 @@ bool KColorScheme::operator==(const KColorScheme &other) const
 // static
 qreal KColorScheme::contrastF(const KSharedConfigPtr &config)
 {
-    KConfigGroup g(config ? config : defaultConfig(), "KDE");
+    KConfigGroup g(config ? config : defaultConfig(), QStringLiteral("KDE"));
     return 0.1 * g.readEntry("contrast", 7);
 }
 
@@ -557,19 +557,19 @@ bool KColorScheme::isColorSetSupported(const KSharedConfigPtr &config, KColorSch
 {
     switch (set) {
         case View:
-            return config->hasGroup("Colors:View");
+            return config->hasGroup(QStringLiteral("Colors:View"));
         case Window:
-            return config->hasGroup("Colors:Window");
+            return config->hasGroup(QStringLiteral("Colors:Window"));
         case Button:
-            return config->hasGroup("Colors:Button");
+            return config->hasGroup(QStringLiteral("Colors:Button"));
         case Selection:
-            return config->hasGroup("Colors:Selection");
+            return config->hasGroup(QStringLiteral("Colors:Selection"));
         case Tooltip:
-            return config->hasGroup("Colors:Tooltip");
+            return config->hasGroup(QStringLiteral("Colors:Tooltip"));
         case Complementary:
-            return config->hasGroup("Colors:Complementary");
+            return config->hasGroup(QStringLiteral("Colors:Complementary"));
         case Header:
-            return config->hasGroup("Colors:Header");
+            return config->hasGroup(QStringLiteral("Colors:Header"));
         case NColorSets:
             break;
     }
