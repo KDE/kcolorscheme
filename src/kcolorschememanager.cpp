@@ -47,7 +47,7 @@ void KColorSchemeManagerPrivate::activateSchemeInternal(const QString &colorSche
 // On other platforms we apply a default KColorScheme
 QString KColorSchemeManagerPrivate::automaticColorSchemePath() const
 {
-#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
     const QString colorSchemeId = m_colorSchemeWatcher.systemPreference() == KColorSchemeWatcher::PreferDark ? getDarkColorScheme() : getLightColorScheme();
     return indexForSchemeId(colorSchemeId).data(KColorSchemeModel::PathRole).toString();
 #else
@@ -95,7 +95,7 @@ KColorSchemeManager::KColorSchemeManager(QObject *parent)
     : QObject(parent)
     , d(new KColorSchemeManagerPrivate)
 {
-#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
     connect(&d->m_colorSchemeWatcher, &KColorSchemeWatcher::systemPreferenceChanged, this, [this]() {
         if (!d->m_activatedScheme.isEmpty()) {
             // Don't override what has been manually set

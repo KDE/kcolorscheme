@@ -28,7 +28,7 @@ public:
     QString automaticColorSchemePath() const;
     QModelIndex indexForSchemeId(const QString &id) const;
 
-#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
     const QString &getLightColorScheme() const
     {
         return m_lightColorScheme;
