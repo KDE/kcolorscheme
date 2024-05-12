@@ -1,6 +1,5 @@
 # SPDX-FileCopyrightText: None
 # SPDX-License-Identifier: CC0-1.0
-maintainer: davidre
 description: Classes to interact with KColorScheme
 tier: 2
 type: integration
