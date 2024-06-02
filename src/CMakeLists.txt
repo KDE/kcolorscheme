@@ -15,6 +15,7 @@ target_sources(KF6ColorScheme PRIVATE
   kcolorschememanager.cpp
   kcolorschememodel.cpp
   kstatefulbrush.cpp
+  color-schemes.qrc
 )
 
 ecm_qt_declare_logging_category(KF6ColorScheme

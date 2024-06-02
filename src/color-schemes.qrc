@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/org.kde.kcolorscheme">
+        <file>color-schemes/BreezeDark.colors</file>
+        <file>color-schemes/BreezeLight.colors</file>
+    </qresource>
+</RCC>
