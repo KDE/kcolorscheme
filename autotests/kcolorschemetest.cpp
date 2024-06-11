@@ -7,6 +7,7 @@
 #include <QAbstractItemModel>
 #include <QObject>
 #include <QTest>
+#include <qcolor.h>
 
 #include "kcolorscheme.h"
 #include "kcolorschememanager.h"
@@ -89,6 +90,7 @@ private Q_SLOTS:
 
         checkDecorationRole(KColorScheme::FocusColor);
         checkDecorationRole(KColorScheme::HoverColor);
+        checkDecorationRole(KColorScheme::AccentColor);
     }
 
     void readContrast()

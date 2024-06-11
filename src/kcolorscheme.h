@@ -278,6 +278,11 @@ public:
          */
         HoverColor,
         /**
+         * Color used to draw colorful accents to indicate important parts in the UI
+         * @since 6.3
+         */
+        AccentColor,
+        /**
          * Number of decoration roles.
          * @since 5.65
          */
