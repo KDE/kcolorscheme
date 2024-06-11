@@ -113,6 +113,7 @@ struct SerializedColors {
 struct DecorationColors {
     QColor Focus;
     QColor Hover;
+    QColor Accent;
 };
 
 // clang-format off
@@ -212,6 +213,7 @@ static const SerializedColors defaultHeaderColors = {
 static const DecorationColors defaultDecorationColors = {
     {  61, 174, 233 }, // Focus
     { 147, 206, 233 }, // Hover
+    {  61, 174, 233 }, // Accent
 };
 // END default colors
 // clang-format off
@@ -270,6 +272,8 @@ static DecorationColors loadDecorationColors(const KConfigGroup &group, const De
     DecorationColors colors;
     colors.Focus = group.readEntry("DecorationFocus", defaults.Focus);
     colors.Hover = group.readEntry("DecorationHover", defaults.Hover);
+    // Fallback to colors.Focus as would be ok for most old themes without an accent color
+    colors.Accent = group.readEntry("DecorationAccent", colors.Focus);
     return colors;
 }
 
@@ -357,6 +361,7 @@ KColorSchemePrivate::KColorSchemePrivate(const KSharedConfigPtr &config, QPalett
 
     _brushes.deco[KColorScheme::FocusColor] = loadedDecoColors.Focus;
     _brushes.deco[KColorScheme::HoverColor] = loadedDecoColors.Hover;
+    _brushes.deco[KColorScheme::AccentColor] = loadedDecoColors.Accent;
 
     if (tint.isValid()) {
         // adjustment
@@ -606,7 +611,7 @@ QPalette KColorScheme::createApplicationPalette(const KSharedConfigPtr &config)
         palette.setBrush(state, QPalette::ToolTipText, schemeTooltip.foreground());
         palette.setBrush(state, QPalette::PlaceholderText, schemeView.foreground(KColorScheme::InactiveText));
 #if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
-        palette.setBrush(state, QPalette::Accent, schemeSelection.background());
+        palette.setBrush(state, QPalette::Accent, schemeWindow.decoration(KColorScheme::AccentColor));
 #endif
 
         palette.setColor(state, QPalette::Light, schemeWindow.shade(KColorScheme::LightShade));
