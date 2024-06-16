@@ -101,6 +101,16 @@ public:
      */
     QString activeSchemeId() const;
 
+    /**
+     * Returns the manager for the current application instance.
+     * If no instance is existing, it will be constructed.
+     *
+     * @return color scheme manager for the current application instance
+     *
+     * @since 6.4
+     */
+    static KColorSchemeManager *instance();
+
 public Q_SLOTS:
     /**
      * @brief Activates the KColorScheme identified by the provided @p index.

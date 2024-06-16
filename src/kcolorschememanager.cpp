@@ -21,6 +21,7 @@
 #include <QGuiApplication>
 #include <QIcon>
 #include <QPainter>
+#include <QPointer>
 #include <QStandardPaths>
 
 // ensure we are linking KConfigGui, so QColor I/O from KConfig works
@@ -201,6 +202,15 @@ void KColorSchemeManager::saveSchemeToConfigFile(const QString &schemeName) cons
 QString KColorSchemeManager::activeSchemeId() const
 {
     return d->m_activatedScheme;
+}
+
+KColorSchemeManager *KColorSchemeManager::instance()
+{
+    static QPointer<KColorSchemeManager> manager;
+    if (!manager) {
+        manager = new KColorSchemeManager(qApp);
+    }
+    return manager;
 }
 
 #include "moc_kcolorschememanager.cpp"
