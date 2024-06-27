@@ -606,7 +606,7 @@ QPalette KColorScheme::createApplicationPalette(const KSharedConfigPtr &config)
         palette.setBrush(state, QPalette::ToolTipText, schemeTooltip.foreground());
         palette.setBrush(state, QPalette::PlaceholderText, schemeView.foreground(KColorScheme::InactiveText));
 #if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
-        palette.setBrush(state, QPalette::Accent, schemeSelection.background());
+        palette.setBrush(state, QPalette::Accent, schemeWindow.decoration(KColorScheme::FocusColor));
 #endif
 
         palette.setColor(state, QPalette::Light, schemeWindow.shade(KColorScheme::LightShade));
