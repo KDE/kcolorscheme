@@ -168,11 +168,25 @@ void KColorSchemeManager::init()
 
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup cg(config, QStringLiteral("UiSettings"));
-    const QString scheme = cg.readEntry("ColorScheme", QString());
+
+    QString schemeId;
+
+    // Migrate the deprecated ColorScheme to ColorSchemeId, if needed
+    // TODO: KF7 keep only else branch
+    if(!cg.hasKey("ColorSchemeId") && cg.hasKey("ColorScheme")) {
+        const QString scheme = cg.readEntry("ColorScheme", QString());
+        const auto index = indexForScheme(scheme);
+        if (index.isValid()) {
+            schemeId = index.data(KColorSchemeModel::IdRole).toString();
+            saveSchemeIdToConfigFile(schemeId);
+        }
+    } else {
+        QString schemeId = cg.readEntry("ColorSchemeId", QString());
+    }
 
     QString schemePath;
 
-    if (scheme.isEmpty() || scheme == QLatin1String("Default")) {
+    if (schemeId.isEmpty()) {
         // Color scheme might be already set from a platform theme
         // This is used for example by QGnomePlatform that can set color scheme
         // matching GNOME settings. This avoids issues where QGnomePlatform sets
@@ -183,7 +197,7 @@ void KColorSchemeManager::init()
             schemePath = d->automaticColorSchemePath();
         }
     } else {
-        const auto index = indexForScheme(scheme);
+        auto index = d->indexForSchemeId(schemeId);
         schemePath = index.data(KColorSchemeModel::PathRole).toString();
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
     }
@@ -246,13 +260,19 @@ void KColorSchemeManager::activateScheme(const QModelIndex &index)
         d->activateSchemeInternal(index.data(KColorSchemeModel::PathRole).toString());
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
         if (d->m_autosaveChanges) {
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 17)
             saveSchemeToConfigFile(index.data(KColorSchemeModel::NameRole).toString());
+#endif
+            saveSchemeIdToConfigFile(index.data(KColorSchemeModel::IdRole).toString());
         }
     } else {
         d->activateSchemeInternal(d->automaticColorSchemePath());
         d->m_activatedScheme = QString();
         if (d->m_autosaveChanges) {
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 17)
             saveSchemeToConfigFile(QString());
+#endif
+            saveSchemeIdToConfigFile(QString());
         }
     }
 }
