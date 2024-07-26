@@ -102,6 +102,13 @@ public:
      * \since 5.89
      */
     void saveSchemeToConfigFile(const QString &schemeName) const;
+     /*!
+      * Saves the color scheme to config file. The scheme is saved by default whenever it's changed.
+      * Use this method when autosaving is turned off, see setAutosaveChanges().
+      *
+      * \since 6.19
+      */
+     void saveSchemeIdToConfigFile(const QString &schemeId) const;
     /*!
      * Sets color scheme autosaving. Default value is \c true.
      * If this is set to \c false, the scheme is not going to be remembered when the
@@ -151,6 +158,19 @@ public Q_SLOTS:
      * \sa model()
      */
     void activateScheme(const QModelIndex &index);
+
+    /*!
+     * \brief Activates the KColorScheme identified by the provided \param schemeId.
+     *
+     * Installs the KColorScheme as the QApplication's QPalette.
+     *
+     * \param schemeId The id for the KColorScheme to activate.
+     * Passing an empty id activates the system scheme.
+     * \sa model()
+     *
+     * \since 6.19
+     */
+    void activateScheme(const QString &schemeId);
 
 private:
     class KCOLORSCHEME_NO_EXPORT GuardApplicationConstructor
