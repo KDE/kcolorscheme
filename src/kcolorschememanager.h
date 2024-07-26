@@ -37,10 +37,13 @@ class KColorSchemeManagerPrivate;
  * which holds all the available color schemes. A possible usage looks like the following:
  *
  * \code
- * KColorSchemeManager *schemes = new KColorSchemeManager(this);
+ * KColorSchemeManager *manager = new KColorSchemeManager(this);
  * QListView *view = new QListView(this);
- * view->setModel(schemes->model());
- * connect(view, &QListView::activated, schemes, &KColorSchemeManager::activateScheme);
+ * view->setModel(manager->model());
+ * connect(view, &QListView::activated, manager, [manager] (const QModelIndex &index) {
+ *     manager->activateScheme(index.data(KColorSchemeModel::IdRole).toString());
+ *  });
+ *
  * \endcode
  *
  * A convenience function that creates a KActionMenu that contains and activates color schemes exists
