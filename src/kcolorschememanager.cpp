@@ -277,6 +277,7 @@ void KColorSchemeManager::activateScheme(const QString &schemeId)
     }
 }
 
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 19)
 void KColorSchemeManager::saveSchemeToConfigFile(const QString &schemeName) const
 {
     const auto index = indexForScheme(schemeName);
@@ -286,6 +287,7 @@ void KColorSchemeManager::saveSchemeToConfigFile(const QString &schemeName) cons
     }
     saveSchemeIdToConfigFile(schemeId);
 }
+#endif
 
 void KColorSchemeManager::saveSchemeIdToConfigFile(const QString &schemeId) const
 {

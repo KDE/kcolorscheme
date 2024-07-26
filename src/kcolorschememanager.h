@@ -95,13 +95,21 @@ public:
      */
     QModelIndex indexForScheme(const QString &name) const;
 
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 19)
+
     /*!
      * Saves the color scheme to config file. The scheme is saved by default whenever it's changed.
      * Use this method when autosaving is turned off, see setAutosaveChanges().
      *
      * \since 5.89
+     *
+     * \deprecated[6.19]
+     * Use saveSchemeIdToConfigFile() instead which is not locale dependent
      */
+    KCOLORSCHEME_DEPRECATED_VERSION(6, 19, "Use saveSchemeIdToConfigFile() instead which is not locale dependent")
     void saveSchemeToConfigFile(const QString &schemeName) const;
+#endif
+
      /*!
       * Saves the color scheme to config file. The scheme is saved by default whenever it's changed.
       * Use this method when autosaving is turned off, see setAutosaveChanges().
