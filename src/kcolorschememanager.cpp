@@ -257,17 +257,45 @@ void KColorSchemeManager::activateScheme(const QModelIndex &index)
     }
 }
 
+void KColorSchemeManager::activateScheme(const QString &schemeId)
+{
+    auto index = d->indexForSchemeId(schemeId);
+    const bool isDefaultEntry = index.data(KColorSchemeModel::IdRole).toString().isEmpty();
+
+    if (index.isValid() && !isDefaultEntry) {
+        d->activateSchemeInternal(index.data(KColorSchemeModel::PathRole).toString());
+        d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
+        if (d->m_autosaveChanges) {
+            saveSchemeIdToConfigFile(index.data(KColorSchemeModel::IdRole).toString());
+        }
+    } else {
+        d->activateSchemeInternal(d->automaticColorSchemePath());
+        d->m_activatedScheme = QString();
+        if (d->m_autosaveChanges) {
+            saveSchemeIdToConfigFile(QString());
+        }
+    }
+}
+
 void KColorSchemeManager::saveSchemeToConfigFile(const QString &schemeName) const
+{
+    const auto index = indexForScheme(schemeName);
+    QString schemeId;
+    if (index.isValid()) {
+        schemeId = index.data(KColorSchemeModel::IdRole).toString();
+    }
+    saveSchemeIdToConfigFile(schemeId);
+}
+
+void KColorSchemeManager::saveSchemeIdToConfigFile(const QString &schemeId) const
 {
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup cg(config, QStringLiteral("UiSettings"));
-
-    if (schemeName.isEmpty() && !cg.hasDefault("ColorScheme")) {
+    if (schemeId.isEmpty() && !cg.hasDefault("ColorScheme")) {
         cg.revertToDefault("ColorScheme");
     } else {
-        cg.writeEntry("ColorScheme", KLocalizedString::removeAcceleratorMarker(schemeName));
+        cg.writeEntry("ColorScheme", schemeId);
     }
-
     cg.sync();
 }
 
