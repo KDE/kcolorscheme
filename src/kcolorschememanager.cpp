@@ -277,6 +277,7 @@ void KColorSchemeManager::activateScheme(const QString &schemeId)
     }
 }
 
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 17)
 void KColorSchemeManager::saveSchemeToConfigFile(const QString &schemeName) const
 {
     KSharedConfigPtr config = KSharedConfig::openConfig();
@@ -290,6 +291,7 @@ void KColorSchemeManager::saveSchemeToConfigFile(const QString &schemeName) cons
 
     cg.sync();
 }
+#endif
 
 void KColorSchemeManager::saveSchemeIdToConfigFile(const QString &schemeId) const
 {
