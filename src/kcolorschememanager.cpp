@@ -168,11 +168,29 @@ void KColorSchemeManager::init()
 
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup cg(config, QStringLiteral("UiSettings"));
+
     const QString scheme = cg.readEntry("ColorScheme", QString());
+    auto index = indexForSchemeId(scheme);
+    bool updateDeprecated = false;
+    if (!scheme.isEmpty() && !index.isValid()) {
+        // No sucess treating value as ID maybe it is a scheme name?
+        // Until 6.16 we saved the scheme name instead of the id to ColorScheme
+        index = indexForScheme(scheme);
+        updateDeprecated = true;
+    }
+
+    QString schemeId;
+    if (index.isValid()) {
+        schemeId = index.data(KColorSchemeModel::IdRole).toString();
+
+        if (updateDeprecated) {
+            saveSchemeIdToConfigFile(schemeId);
+        }
+    }
 
     QString schemePath;
 
-    if (scheme.isEmpty() || scheme == QLatin1String("Default")) {
+    if (schemeId.isEmpty()) {
         // Color scheme might be already set from a platform theme
         // This is used for example by QGnomePlatform that can set color scheme
         // matching GNOME settings. This avoids issues where QGnomePlatform sets
@@ -183,7 +201,6 @@ void KColorSchemeManager::init()
             schemePath = d->automaticColorSchemePath();
         }
     } else {
-        const auto index = indexForScheme(scheme);
         schemePath = index.data(KColorSchemeModel::PathRole).toString();
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
     }
@@ -245,13 +262,13 @@ void KColorSchemeManager::activateScheme(const QModelIndex &index)
     if (index.isValid() && index.model() == d->model.get() && !isDefaultEntry) {
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
         if (d->m_autosaveChanges) {
-            saveSchemeToConfigFile(index.data(KColorSchemeModel::NameRole).toString());
+            saveSchemeIdToConfigFile(index.data(KColorSchemeModel::IdRole).toString());
         }
         d->activateSchemeInternal(index.data(KColorSchemeModel::PathRole).toString());
     } else {
         d->m_activatedScheme = QString();
         if (d->m_autosaveChanges) {
-            saveSchemeToConfigFile(QString());
+            saveSchemeIdToConfigFile(QString());
         }
         d->activateSchemeInternal(d->automaticColorSchemePath());
     }
