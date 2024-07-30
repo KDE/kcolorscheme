@@ -141,6 +141,14 @@ ForegroundVisited=155,89,182
 [General]
 ColorScheme=BreezeLight
 Name=Breeze Light
+Name[es]=Brisa claro
+Name[ia]=Brisa Ligier
+Name[nl]=Breeze Light
+Name[sl]=Sapica svetla
+Name[sv]=Breeze ljus
+Name[tr]=Esinti Açık
+Name[uk]=Світла Breeze
+Name[x-test]=xxBreeze Lightxx
 shadeSortColumn=true
 
 [KDE]

@@ -141,6 +141,14 @@ ForegroundVisited=155,89,182
 [General]
 ColorScheme=BreezeDark
 Name=Breeze Dark
+Name[es]=Brisa oscuro
+Name[ia]=Brisa obscure
+Name[nl]=Breeze Dark
+Name[sl]=Sapica temna
+Name[sv]=Breeze mörk
+Name[tr]=Esinti Koyu
+Name[uk]=Темна Breeze
+Name[x-test]=xxBreeze Darkxx
 shadeSortColumn=true
 
 [KDE]
