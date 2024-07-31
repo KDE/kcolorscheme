@@ -141,9 +141,11 @@ ForegroundVisited=155,89,182
 [General]
 ColorScheme=BreezeDark
 Name=Breeze Dark
+Name[ca]=Brisa fosca
 Name[es]=Brisa oscuro
 Name[ia]=Brisa obscure
 Name[nl]=Breeze Dark
+Name[nn]=Breeze mørk
 Name[sl]=Sapica temna
 Name[sv]=Breeze mörk
 Name[tr]=Esinti Koyu

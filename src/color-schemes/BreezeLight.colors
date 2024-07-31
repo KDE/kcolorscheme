@@ -141,9 +141,11 @@ ForegroundVisited=155,89,182
 [General]
 ColorScheme=BreezeLight
 Name=Breeze Light
+Name[ca]=Brisa clara
 Name[es]=Brisa claro
 Name[ia]=Brisa Ligier
 Name[nl]=Breeze Light
+Name[nn]=Breeze lys
 Name[sl]=Sapica svetla
 Name[sv]=Breeze ljus
 Name[tr]=Esinti Açık
