@@ -143,17 +143,21 @@ ColorScheme=BreezeLight
 Name=Breeze Light
 Name[ca]=Brisa clara
 Name[ca@valencia]=Brisa clara
+Name[en_GB]=Breeze Light
 Name[es]=Brisa claro
+Name[eu]=Breeze (Brisa) argia
 Name[ia]=Brisa Ligier
 Name[ka]=Breeze ღია
 Name[nl]=Breeze Light
 Name[nn]=Breeze lys
+Name[pl]=Jasna Bryza
 Name[sl]=Sapica svetla
 Name[sv]=Breeze ljus
 Name[tr]=Esinti Açık
 Name[uk]=Світла Breeze
 Name[x-test]=xxBreeze Lightxx
 Name[zh_CN]=Breeze 微风浅色
+Name[zh_TW]=Breeze Light
 shadeSortColumn=true
 
 [KDE]

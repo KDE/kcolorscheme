@@ -143,17 +143,21 @@ ColorScheme=BreezeDark
 Name=Breeze Dark
 Name[ca]=Brisa fosca
 Name[ca@valencia]=Brisa fosca
+Name[en_GB]=Breeze Dark
 Name[es]=Brisa oscuro
+Name[eu]=Breeze (Brisa) Iluna
 Name[ia]=Brisa obscure
 Name[ka]=Breeze მუქი
 Name[nl]=Breeze Dark
 Name[nn]=Breeze mørk
+Name[pl]=Ciemna Bryza
 Name[sl]=Sapica temna
 Name[sv]=Breeze mörk
 Name[tr]=Esinti Koyu
 Name[uk]=Темна Breeze
 Name[x-test]=xxBreeze Darkxx
 Name[zh_CN]=Breeze 微风深色
+Name[zh_TW]=Breeze Dark
 shadeSortColumn=true
 
 [KDE]
