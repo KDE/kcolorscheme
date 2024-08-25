@@ -72,6 +72,7 @@ private:
     int _effects[NEffectTypes];
     double _amount[NEffectTypes];
     QColor _color;
+    bool _newColorMath = false;
 };
 
 #endif

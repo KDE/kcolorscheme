@@ -10,12 +10,14 @@
 
 #include "kcolorscheme_debug.h"
 
+#include <KColorManipulation>
 #include <KColorUtils>
 #include <KConfig>
 #include <KConfigGroup>
 
 #include <QBrush>
 #include <QColor>
+#include <kcolormanipulation.h>
 
 // BEGIN StateEffects
 StateEffects::StateEffects(QPalette::ColorGroup state, const KSharedConfigPtr &config)
@@ -37,12 +39,24 @@ StateEffects::StateEffects(QPalette::ColorGroup state, const KSharedConfigPtr &c
         KConfigGroup cfg(config, group);
         const bool enabledByDefault = (state == QPalette::Disabled);
         if (cfg.readEntry("Enable", enabledByDefault)) {
-            _effects[Intensity] = cfg.readEntry("IntensityEffect", (int)(state == QPalette::Disabled ? IntensityDarken : IntensityNoEffect));
-            _effects[Color] = cfg.readEntry("ColorEffect", (int)(state == QPalette::Disabled ? ColorNoEffect : ColorDesaturate));
-            _effects[Contrast] = cfg.readEntry("ContrastEffect", (int)(state == QPalette::Disabled ? ContrastFade : ContrastTint));
-            _amount[Intensity] = cfg.readEntry("IntensityAmount", state == QPalette::Disabled ? 0.10 : 0.0);
-            _amount[Color] = cfg.readEntry("ColorAmount", state == QPalette::Disabled ? 0.0 : -0.9);
-            _amount[Contrast] = cfg.readEntry("ContrastAmount", state == QPalette::Disabled ? 0.65 : 0.25);
+            if (cfg.readEntry("NewColorMath", false)) {
+                _newColorMath = true;
+
+                _effects[Intensity] = cfg.readEntry("IntensityEffect", (int)IntensityNoEffect);
+                _effects[Color] = cfg.readEntry("ColorEffect", (int)(state == QPalette::Disabled ? ColorDesaturate : ColorNoEffect));
+                _effects[Contrast] = cfg.readEntry("ContrastEffect", (int)(state == QPalette::Disabled ? ContrastFade : ContrastNoEffect));
+                _amount[Intensity] = cfg.readEntry("IntensityAmount", 0.0);
+                _amount[Color] = cfg.readEntry("ColorAmount", 0.2);
+                _amount[Contrast] = cfg.readEntry("ContrastAmount", state == QPalette::Disabled ? 0.5 : 0.0);
+            } else {
+                _effects[Intensity] = cfg.readEntry("IntensityEffect", (int)(state == QPalette::Disabled ? IntensityDarken : IntensityNoEffect));
+                _effects[Color] = cfg.readEntry("ColorEffect", (int)(state == QPalette::Disabled ? ColorNoEffect : ColorDesaturate));
+                _effects[Contrast] = cfg.readEntry("ContrastEffect", (int)(state == QPalette::Disabled ? ContrastFade : ContrastTint));
+                _amount[Intensity] = cfg.readEntry("IntensityAmount", state == QPalette::Disabled ? 0.10 : 0.0);
+                _amount[Color] = cfg.readEntry("ColorAmount", state == QPalette::Disabled ? 0.0 : -0.9);
+                _amount[Contrast] = cfg.readEntry("ContrastAmount", state == QPalette::Disabled ? 0.65 : 0.25);
+            }
+
             if (_effects[Color] > ColorNoEffect) {
                 _color = cfg.readEntry("Color", state == QPalette::Disabled ? QColor(56, 56, 56) : QColor(112, 111, 110));
             }
@@ -53,27 +67,52 @@ StateEffects::StateEffects(QPalette::ColorGroup state, const KSharedConfigPtr &c
 QBrush StateEffects::brush(const QBrush &background) const
 {
     QColor color = background.color(); // TODO - actually work on brushes
-    switch (_effects[Intensity]) {
-    case IntensityShade:
-        color = KColorUtils::shade(color, _amount[Intensity]);
-        break;
-    case IntensityDarken:
-        color = KColorUtils::darken(color, _amount[Intensity]);
-        break;
-    case IntensityLighten:
-        color = KColorUtils::lighten(color, _amount[Intensity]);
-        break;
-    }
-    switch (_effects[Color]) {
-    case ColorDesaturate:
-        color = KColorUtils::darken(color, 0.0, 1.0 - _amount[Color]);
-        break;
-    case ColorFade:
-        color = KColorUtils::mix(color, _color, _amount[Color]);
-        break;
-    case ColorTint:
-        color = KColorUtils::tint(color, _color, _amount[Color]);
-        break;
+    if (_newColorMath) {
+        switch (_effects[Intensity]) {
+        case IntensityShade:
+            color = KColorManipulation::adjustedLightness(color, _amount[Intensity]);
+            break;
+        case IntensityDarken:
+            color = KColorManipulation::darker(color, _amount[Intensity]);
+            break;
+        case IntensityLighten:
+            color = KColorManipulation::lighter(color, _amount[Intensity]);
+            break;
+        }
+        switch (_effects[Color]) {
+        case ColorDesaturate:
+            color = KColorManipulation::adjustedSaturation(color, 1.0 - _amount[Color]);
+            break;
+        case ColorFade:
+            color = KColorManipulation::lerp(color, _color, _amount[Color]);
+            break;
+        case ColorTint:
+            color = KColorManipulation::tint(color, _color, _amount[Color]);
+            break;
+        }
+    } else {
+        switch (_effects[Intensity]) {
+        case IntensityShade:
+            color = KColorUtils::shade(color, _amount[Intensity]);
+            break;
+        case IntensityDarken:
+            color = KColorUtils::darken(color, _amount[Intensity]);
+            break;
+        case IntensityLighten:
+            color = KColorUtils::lighten(color, _amount[Intensity]);
+            break;
+        }
+        switch (_effects[Color]) {
+        case ColorDesaturate:
+            color = KColorUtils::darken(color, 0.0, 1.0 - _amount[Color]);
+            break;
+        case ColorFade:
+            color = KColorUtils::mix(color, _color, _amount[Color]);
+            break;
+        case ColorTint:
+            color = KColorUtils::tint(color, _color, _amount[Color]);
+            break;
+        }
     }
     return QBrush(color);
 }
@@ -83,13 +122,24 @@ QBrush StateEffects::brush(const QBrush &foreground, const QBrush &background) c
     QColor color = foreground.color(); // TODO - actually work on brushes
     QColor bg = background.color();
     // Apply the foreground effects
-    switch (_effects[Contrast]) {
-    case ContrastFade:
-        color = KColorUtils::mix(color, bg, _amount[Contrast]);
-        break;
-    case ContrastTint:
-        color = KColorUtils::tint(color, bg, _amount[Contrast]);
-        break;
+    if (_newColorMath) {
+        switch (_effects[Contrast]) {
+        case ContrastFade:
+            color = KColorManipulation::lerp(color, bg, _amount[Contrast]);
+            break;
+        case ContrastTint:
+            color = KColorManipulation::tint(color, bg, _amount[Contrast]);
+            break;
+        }
+    } else {
+        switch (_effects[Contrast]) {
+        case ContrastFade:
+            color = KColorUtils::mix(color, bg, _amount[Contrast]);
+            break;
+        case ContrastTint:
+            color = KColorUtils::tint(color, bg, _amount[Contrast]);
+            break;
+        }
     }
     // Now apply global effects
     return brush(color);
