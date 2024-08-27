@@ -14,6 +14,7 @@
 #include <memory>
 
 class QAbstractItemModel;
+class QGuiApplication;
 class QModelIndex;
 class QIcon;
 
@@ -53,7 +54,11 @@ class KCOLORSCHEME_EXPORT KColorSchemeManager : public QObject
 {
     Q_OBJECT
 public:
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 6)
+    KCOLORSCHEME_DEPRECATED_VERSION(6, 6, "Use KColorSchemeManager::instance()")
     explicit KColorSchemeManager(QObject *parent = nullptr);
+#endif
+
     ~KColorSchemeManager() override;
 
     /**
@@ -101,6 +106,17 @@ public:
      */
     QString activeSchemeId() const;
 
+    /**
+     * Returns the manager for the current application instance.
+     * If no instance is existing, it will be constructed.
+     * Must be called after construction of the gui application instance.
+     *
+     * @return color scheme manager for the current application instance
+     *
+     * @since 6.6
+     */
+    static KColorSchemeManager *instance();
+
 public Q_SLOTS:
     /**
      * @brief Activates the KColorScheme identified by the provided @p index.
@@ -115,6 +131,15 @@ public Q_SLOTS:
     void activateScheme(const QModelIndex &index);
 
 private:
+    /**
+     * Private constructor for instance().
+     *
+     * @param app app parent
+     *
+     * @since 6.6
+     */
+    KColorSchemeManager(QGuiApplication *app);
+
     std::unique_ptr<KColorSchemeManagerPrivate> const d;
 };
 

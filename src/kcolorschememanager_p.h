@@ -14,10 +14,12 @@
 
 #include <KColorSchemeWatcher>
 
+class KColorSchemeManager;
+
 class KColorSchemeManagerPrivate
 {
 public:
-    KColorSchemeManagerPrivate();
+    KColorSchemeManagerPrivate(KColorSchemeManager *manager);
 
     std::unique_ptr<KColorSchemeModel> model;
     bool m_autosaveChanges = true;

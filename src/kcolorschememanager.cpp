@@ -21,6 +21,7 @@
 #include <QGuiApplication>
 #include <QIcon>
 #include <QPainter>
+#include <QPointer>
 #include <QStandardPaths>
 
 // ensure we are linking KConfigGui, so QColor I/O from KConfig works
@@ -86,23 +87,17 @@ QIcon KColorSchemeManagerPrivate::createPreview(const QString &path)
     return result;
 }
 
-KColorSchemeManagerPrivate::KColorSchemeManagerPrivate()
+KColorSchemeManagerPrivate::KColorSchemeManagerPrivate(KColorSchemeManager *manager)
     : model(new KColorSchemeModel())
 {
-}
-
-KColorSchemeManager::KColorSchemeManager(QObject *parent)
-    : QObject(parent)
-    , d(new KColorSchemeManagerPrivate)
-{
 #if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
-    connect(&d->m_colorSchemeWatcher, &KColorSchemeWatcher::systemPreferenceChanged, this, [this]() {
-        if (!d->m_activatedScheme.isEmpty()) {
+    QObject::connect(&m_colorSchemeWatcher, &KColorSchemeWatcher::systemPreferenceChanged, manager, [this]() {
+        if (!m_activatedScheme.isEmpty()) {
             // Don't override what has been manually set
             return;
         }
 
-        d->activateSchemeInternal(d->automaticColorSchemePath());
+        activateSchemeInternal(automaticColorSchemePath());
     });
 #endif
 
@@ -121,15 +116,29 @@ KColorSchemeManager::KColorSchemeManager(QObject *parent)
         // BUG: 447029
         schemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
         if (schemePath.isEmpty()) {
-            schemePath = d->automaticColorSchemePath();
+            schemePath = automaticColorSchemePath();
         }
     } else {
-        const auto index = indexForScheme(scheme);
+        const auto index = manager->indexForScheme(scheme);
         schemePath = index.data(KColorSchemeModel::PathRole).toString();
-        d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
+        m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
     }
-    d->activateSchemeInternal(schemePath);
+    activateSchemeInternal(schemePath);
 }
+
+KColorSchemeManager::KColorSchemeManager(QGuiApplication *app)
+    : QObject(app)
+    , d(new KColorSchemeManagerPrivate(this))
+{
+}
+
+#if KCOLORSCHEME_BUILD_DEPRECATED_SINCE(6, 6)
+KColorSchemeManager::KColorSchemeManager(QObject *parent)
+    : QObject(parent)
+    , d(new KColorSchemeManagerPrivate(this))
+{
+}
+#endif
 
 KColorSchemeManager::~KColorSchemeManager()
 {
@@ -201,6 +210,16 @@ void KColorSchemeManager::saveSchemeToConfigFile(const QString &schemeName) cons
 QString KColorSchemeManager::activeSchemeId() const
 {
     return d->m_activatedScheme;
+}
+
+KColorSchemeManager *KColorSchemeManager::instance()
+{
+    Q_ASSERT(qApp);
+    static QPointer<KColorSchemeManager> manager;
+    if (!manager) {
+        manager = new KColorSchemeManager(qApp);
+    }
+    return manager;
 }
 
 #include "moc_kcolorschememanager.cpp"
