@@ -140,6 +140,8 @@ private:
      */
     KColorSchemeManager(QGuiApplication *app);
 
+    KCOLORSCHEME_NO_EXPORT void init();
+
     std::unique_ptr<KColorSchemeManagerPrivate> const d;
 };
 

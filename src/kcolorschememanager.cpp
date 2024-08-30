@@ -87,17 +87,41 @@ QIcon KColorSchemeManagerPrivate::createPreview(const QString &path)
     return result;
 }
 
-KColorSchemeManagerPrivate::KColorSchemeManagerPrivate(KColorSchemeManager *manager)
+KColorSchemeManagerPrivate::KColorSchemeManagerPrivate()
     : model(new KColorSchemeModel())
 {
+}
+
+KColorSchemeManager::KColorSchemeManager(QGuiApplication *app)
+    : QObject(app)
+    , d(new KColorSchemeManagerPrivate)
+{
+    init();
+}
+
+#if KCOLORSCHEME_BUILD_DEPRECATED_SINCE(6, 6)
+KColorSchemeManager::KColorSchemeManager(QObject *parent)
+    : QObject(parent)
+    , d(new KColorSchemeManagerPrivate())
+{
+    init();
+}
+#endif
+
+KColorSchemeManager::~KColorSchemeManager()
+{
+}
+
+void KColorSchemeManager::init()
+{
 #if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
-    QObject::connect(&m_colorSchemeWatcher, &KColorSchemeWatcher::systemPreferenceChanged, manager, [this]() {
-        if (!m_activatedScheme.isEmpty()) {
+    QObject::connect(&d->m_colorSchemeWatcher, &KColorSchemeWatcher::systemPreferenceChanged, this, [this]() {
+        if (!d->m_activatedScheme.isEmpty()) {
             // Don't override what has been manually set
             return;
         }
 
-        activateSchemeInternal(automaticColorSchemePath());
+        d->activateSchemeInternal(d->automaticColorSchemePath());
     });
 #endif
 
@@ -116,32 +140,14 @@ KColorSchemeManagerPrivate::KColorSchemeManagerPrivate(KColorSchemeManager *mana
         // BUG: 447029
         schemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
         if (schemePath.isEmpty()) {
-            schemePath = automaticColorSchemePath();
+            schemePath = d->automaticColorSchemePath();
         }
     } else {
-        const auto index = manager->indexForScheme(scheme);
+        const auto index = indexForScheme(scheme);
         schemePath = index.data(KColorSchemeModel::PathRole).toString();
-        m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
+        d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
     }
-    activateSchemeInternal(schemePath);
-}
-
-KColorSchemeManager::KColorSchemeManager(QGuiApplication *app)
-    : QObject(app)
-    , d(new KColorSchemeManagerPrivate(this))
-{
-}
-
-#if KCOLORSCHEME_BUILD_DEPRECATED_SINCE(6, 6)
-KColorSchemeManager::KColorSchemeManager(QObject *parent)
-    : QObject(parent)
-    , d(new KColorSchemeManagerPrivate(this))
-{
-}
-#endif
-
-KColorSchemeManager::~KColorSchemeManager()
-{
+    d->activateSchemeInternal(schemePath);
 }
 
 QAbstractItemModel *KColorSchemeManager::model() const

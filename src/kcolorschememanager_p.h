@@ -19,7 +19,7 @@ class KColorSchemeManager;
 class KColorSchemeManagerPrivate
 {
 public:
-    KColorSchemeManagerPrivate(KColorSchemeManager *manager);
+    KColorSchemeManagerPrivate();
 
     std::unique_ptr<KColorSchemeModel> model;
     bool m_autosaveChanges = true;
