@@ -1,6 +1,5 @@
-# SPDX-FileCopyrightText: 2018 Eike Hein <hein@kde.org>
-# SPDX-FileCopyrightText: 2021 Volker Krause <vkrause@kde.org>
-# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-FileCopyrightText: 2024 James Graham <james.h.graham@protonmail.com>
+# SPDX-License-Identifier: BSD-2-Clause
 
 ecm_add_qml_module(kquickcolorschemeplugin URI "org.kde.colorscheme")
 
