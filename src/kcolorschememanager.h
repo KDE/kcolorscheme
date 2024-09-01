@@ -53,6 +53,12 @@ class KColorSchemeManagerPrivate;
 class KCOLORSCHEME_EXPORT KColorSchemeManager : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(QAbstractItemModel *model READ model CONSTANT)
+    Q_PROPERTY(int rowForCurrentScheme READ rowForCurrentScheme WRITE setRowForCurrentScheme NOTIFY activeSchemeChanged)
+    Q_PROPERTY(QString activeSchemeId READ activeSchemeId NOTIFY activeSchemeChanged)
+    Q_PROPERTY(QString activeSchemeName READ activeSchemeName NOTIFY activeSchemeChanged)
+
 public:
 #if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 6)
     KCOLORSCHEME_DEPRECATED_VERSION(6, 6, "Use KColorSchemeManager::instance()")
@@ -72,6 +78,28 @@ public:
      * @see KColorSchemeModel
      */
     QAbstractItemModel *model() const;
+
+    /**
+     * Returns the row for the currently active scheme in KColorSchemeManager::model().
+     *
+     * @note This returns an int as the currentIndex values in QML controls like ComboBox
+     *       actually take an int.
+     *
+     * @see model
+     * @since 6.6
+     */
+    int rowForCurrentScheme() const;
+
+    /**
+     * Sets the currently active scheme to the given row in KColorSchemeManager::model().
+     *
+     * @note This takes an int as the currentIndex values in QML controls like ComboBox
+     *       actually are an int.
+     *
+     * @see model
+     * @since 6.6
+     */
+    void setRowForCurrentScheme(int newRow);
 
     /**
      * Returns the model index for the scheme with the given @p id. If no such
@@ -148,6 +176,9 @@ public Q_SLOTS:
      * @see model()
      */
     void activateScheme(const QModelIndex &index);
+
+Q_SIGNALS:
+    void activeSchemeChanged() const;
 
 private:
     class KCOLORSCHEME_NO_EXPORT GuardApplicationConstructor

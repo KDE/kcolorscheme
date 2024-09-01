@@ -155,6 +155,7 @@ void KColorSchemeManager::init()
         const auto index = indexForScheme(scheme);
         schemePath = index.data(KColorSchemeModel::PathRole).toString();
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
+        Q_EMIT activeSchemeChanged();
     }
     d->activateSchemeInternal(schemePath);
 }
@@ -178,6 +179,21 @@ QModelIndex KColorSchemeManagerPrivate::indexForSchemeId(const QString &id) cons
 void KColorSchemeManager::setAutosaveChanges(bool autosaveChanges)
 {
     d->m_autosaveChanges = autosaveChanges;
+}
+
+int KColorSchemeManager::rowForCurrentScheme() const
+{
+    const auto index = d->indexForSchemeId(d->m_activatedScheme);
+    return index.isValid() ? index.row() : 0;
+}
+
+void KColorSchemeManager::setRowForCurrentScheme(int newRow)
+{
+    if (newRow == rowForCurrentScheme()) {
+        return;
+    }
+
+    activateScheme(model()->index(newRow, 0));
 }
 
 QModelIndex KColorSchemeManager::indexForSchemeId(const QString &id) const
@@ -211,12 +227,14 @@ void KColorSchemeManager::activateScheme(const QModelIndex &index)
     if (index.isValid() && index.model() == d->model.get() && !isDefaultEntry) {
         d->activateSchemeInternal(index.data(KColorSchemeModel::PathRole).toString());
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
+        Q_EMIT activeSchemeChanged();
         if (d->m_autosaveChanges) {
             saveSchemeToConfigFile(index.data(KColorSchemeModel::NameRole).toString());
         }
     } else {
         d->activateSchemeInternal(d->automaticColorSchemePath());
         d->m_activatedScheme = QString();
+        Q_EMIT activeSchemeChanged();
         if (d->m_autosaveChanges) {
             saveSchemeToConfigFile(QString());
         }
