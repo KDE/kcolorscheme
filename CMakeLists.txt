@@ -26,6 +26,7 @@ include(ECMQtDeclareLoggingCategory)
 include(ECMDeprecationSettings)
 include(CMakeDependentOption)
 include(ECMGenerateQDoc)
+include(ECMQmlModule)
 
 set(REQUIRED_QT_VERSION 6.7.0)
 find_package(Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Gui Quick)
