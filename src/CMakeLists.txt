@@ -17,6 +17,8 @@ target_sources(KF6ColorScheme PRIVATE
   kstatefulbrush.cpp
 )
 
+add_subdirectory(qml)
+
 qt_add_resources(KF6ColorScheme "color_schemes"
     PREFIX "/org.kde.kcolorscheme"
     FILES
