@@ -92,7 +92,7 @@ KColorSchemeManagerPrivate::KColorSchemeManagerPrivate()
 {
 }
 
-KColorSchemeManager::KColorSchemeManager(QGuiApplication *app)
+KColorSchemeManager::KColorSchemeManager(GuardApplicationConstructor, QGuiApplication *app)
     : QObject(app)
     , d(new KColorSchemeManagerPrivate)
 {
@@ -237,7 +237,7 @@ KColorSchemeManager *KColorSchemeManager::instance()
     Q_ASSERT(qApp);
     static QPointer<KColorSchemeManager> manager;
     if (!manager) {
-        manager = new KColorSchemeManager(qApp);
+        manager = new KColorSchemeManager(GuardApplicationConstructor{}, qApp);
     }
     return manager;
 }

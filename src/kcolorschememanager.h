@@ -150,15 +150,10 @@ public Q_SLOTS:
     void activateScheme(const QModelIndex &index);
 
 private:
-    /**
-     * Private constructor for instance().
-     *
-     * @param app app parent
-     *
-     * @since 6.6
-     */
-    KColorSchemeManager(QGuiApplication *app);
-
+    class KCOLORSCHEME_NO_EXPORT GuardApplicationConstructor
+    {
+    };
+    KCOLORSCHEME_NO_EXPORT explicit KColorSchemeManager(GuardApplicationConstructor, QGuiApplication *app);
     KCOLORSCHEME_NO_EXPORT void init();
 
     std::unique_ptr<KColorSchemeManagerPrivate> const d;
