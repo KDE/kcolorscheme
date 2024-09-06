@@ -4,6 +4,8 @@
 add_library(KF6ColorScheme)
 add_library(KF6::ColorScheme ALIAS KF6ColorScheme)
 
+qt_extract_metatypes(KF6ColorScheme)
+
 set_target_properties(KF6ColorScheme PROPERTIES
     VERSION     ${KCOLORSCHEME_VERSION}
     SOVERSION   ${KCOLORSCHEME_SOVERSION}
@@ -52,6 +54,7 @@ target_link_libraries(KF6ColorScheme
   PUBLIC
     KF6::ConfigCore
     Qt6::Gui
+    Qt6::Qml#
   PRIVATE
     Qt6::GuiPrivate
     KF6::ConfigGui # ### this one is not directly used but has to be loaded in order for QColor I/O from KConfig to work!

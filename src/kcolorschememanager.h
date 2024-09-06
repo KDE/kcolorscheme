@@ -11,6 +11,7 @@
 #include <kcolorscheme_export.h>
 
 #include <QObject>
+#include <QQmlEngine>
 #include <memory>
 
 class QAbstractItemModel;
@@ -53,6 +54,8 @@ class KColorSchemeManagerPrivate;
 class KCOLORSCHEME_EXPORT KColorSchemeManager : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(ColorSchemeManager)
+    QML_SINGLETON
 
     Q_PROPERTY(QAbstractItemModel *model READ model CONSTANT)
     Q_PROPERTY(int rowForCurrentScheme READ rowForCurrentScheme WRITE setRowForCurrentScheme NOTIFY activeSchemeChanged)
@@ -163,6 +166,20 @@ public:
      * @since 6.6
      */
     static KColorSchemeManager *instance();
+
+    /**
+     * @brief Returns the manager for the current application instance.
+     *
+     * This just calls KColorSchemeManager::instance() and is needed for QML_SINGLETON
+     * if the (deprecated) default setter is not available.
+     *
+     * @see instance
+     *
+     * @return color scheme manager for the current application instance
+     *
+     * @since 6.6
+     */
+    static KColorSchemeManager *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
 public Q_SLOTS:
     /**

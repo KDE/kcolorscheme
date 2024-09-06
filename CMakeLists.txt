@@ -29,7 +29,7 @@ include(CMakeDependentOption)
 include(ECMQmlModule)
 
 set(REQUIRED_QT_VERSION 6.5.0)
-find_package(Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Gui Quick)
+find_package(Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Gui Qml)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
 

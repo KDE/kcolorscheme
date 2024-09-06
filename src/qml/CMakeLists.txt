@@ -1,15 +1,10 @@
 # SPDX-FileCopyrightText: 2024 James Graham <james.h.graham@protonmail.com>
 # SPDX-License-Identifier: BSD-2-Clause
 
-ecm_add_qml_module(kquickcolorschemeplugin URI "org.kde.colorscheme")
+ecm_add_qml_module(KF6ColorScheme URI org.kde.colorscheme VERSION 1.0 GENERATE_PLUGIN_SOURCE)
 
-target_sources(kquickcolorschemeplugin PRIVATE
-    kquickcolorschemeplugin.cpp
+target_link_libraries(KF6ColorScheme PRIVATE
+    Qt6::Qml
 )
 
-target_link_libraries(kquickcolorschemeplugin PRIVATE
-    KF6ColorScheme
-    Qt6::Quick
-)
-
-ecm_finalize_qml_module(kquickcolorschemeplugin DESTINATION ${KDE_INSTALL_QMLDIR})
+ecm_finalize_qml_module(KF6ColorScheme DESTINATION ${KDE_INSTALL_QMLDIR})

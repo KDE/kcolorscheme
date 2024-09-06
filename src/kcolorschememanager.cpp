@@ -269,4 +269,12 @@ KColorSchemeManager *KColorSchemeManager::instance()
     return manager;
 }
 
+KColorSchemeManager *KColorSchemeManager::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+{
+    Q_UNUSED(qmlEngine);
+    auto instance = KColorSchemeManager::instance();
+    jsEngine->setObjectOwnership(instance, QJSEngine::CppOwnership);
+    return instance;
+}
+
 #include "moc_kcolorschememanager.cpp"
