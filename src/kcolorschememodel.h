@@ -18,10 +18,12 @@ class QModelIndex;
 
 struct KColorSchemeModelPrivate;
 
-/**
- * A model listing the KColorSchemes available in the system.
+/*!
+ * \class KColorSchemeModel
  *
- * @since 5.84
+ * \brief A model listing the KColorSchemes available in the system.
+ *
+ * \since KColorScheme 5.84
  */
 class KColorSchemeModel : public QAbstractListModel
 {

@@ -114,3 +114,4 @@ if(BUILD_QCH)
     )
 endif()
 
+ecm_generate_qdoc(KF6ColorScheme kcolorscheme.qdocconf)
