@@ -1,0 +1,20 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KColorScheme
+description = Classes to interact with KColorScheme.
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+depends += \
+    kde \
+    qtcore \
+    qtgui \
+    qtwidgets \
+    kconfigcore \
+    kguiaddons \
+    kconfigwidgets

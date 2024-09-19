@@ -18,15 +18,24 @@ class QModelIndex;
 
 struct KColorSchemeModelPrivate;
 
-/**
- * A model listing the KColorSchemes available in the system.
+/*!
+ * \class KColorSchemeModel
+ * \inmodule KColorScheme
  *
- * @since 5.84
+ * \brief A model listing the KColorSchemes available in the system.
+ *
+ * \since 5.84
  */
 class KColorSchemeModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
+    /*!
+     * \value NameRole
+     * \value IconRole
+     * \value PathRole
+     * \value IdRole
+     */
     enum Roles {
         NameRole = Qt::DisplayRole,
         IconRole = Qt::DecorationRole,
