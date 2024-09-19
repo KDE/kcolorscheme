@@ -22,7 +22,9 @@ qt_add_resources(KF6ColorScheme "color_schemes"
     FILES
         color-schemes/BreezeDark.colors
         color-schemes/BreezeLight.colors
+    OUTPUT_TARGETS _rcc_targets
 )
+install(TARGETS ${_rcc_targets} EXPORT KF6ColorSchemeTargets ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 ecm_qt_declare_logging_category(KF6ColorScheme
     HEADER kcolorscheme_debug.h
