@@ -81,36 +81,4 @@ ecm_qt_install_logging_categories(
     DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
 )
 
-
-if(BUILD_QCH)
-    ecm_add_qch(
-        KF6ColorScheme_QCH
-        NAME KColorScheme
-        BASE_NAME KF6ColorScheme
-        VERSION ${KF_VERSION}
-        ORG_DOMAIN org.kde
-        SOURCES # using only public headers, to cover only public API
-            ${KColorScheme_HEADERS}
-        MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
-        IMAGE_DIRS "${CMAKE_SOURCE_DIR}/docs/pics"
-        LINK_QCHS
-            KF6GuiAddons_QCH
-        INCLUDE_DIRS
-            ${CMAKE_CURRENT_BINARY_DIR}
-        BLANK_MACROS
-            KCOLORSCHEME_EXPORT
-            KCOLORSCHEME_DEPRECATED
-            KCOLORSCHEME_DEPRECATED_EXPORT
-            "KCOLORSCHEME_DEPRECATED_VERSION(x, y, t)"
-            "KCOLORSCHEME_DEPRECATED_VERSION_BELATED(x, y, xt, yt, t)"
-            "KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(x, y, t)"
-            "KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION_BELATED(x, y, xt, yt, t)"
-        PREDEFINED_MACROS
-            "KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(x, y)=1"
-            "KCOLORSCHEME_BUILD_DEPRECATED_SINCE(x, y)=1"
-        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        COMPONENT Devel
-    )
-endif()
-
+ecm_generate_qdoc(KF6ColorScheme kcolorscheme.qdocconf)
