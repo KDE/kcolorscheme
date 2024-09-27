@@ -24,11 +24,18 @@
 #include <QPointer>
 #include <QStandardPaths>
 
+#include <private/qguiapplication_p.h>
+#include <qpa/qplatformtheme.h>
+
 // ensure we are linking KConfigGui, so QColor I/O from KConfig works
 KCONFIGGUI_EXPORT int initKConfigGroupGui();
 static int s_init = initKConfigGroupGui();
 
 constexpr int defaultSchemeRow = 0;
+
+static bool isKdePlatformTheme() {
+    return QGuiApplicationPrivate::platformTheme() && QGuiApplicationPrivate::platformTheme()->name() == QLatin1String("kde");
+}
 
 void KColorSchemeManagerPrivate::activateSchemeInternal(const QString &colorSchemePath)
 {
@@ -44,16 +51,16 @@ void KColorSchemeManagerPrivate::activateSchemeInternal(const QString &colorSche
 }
 
 // The meaning of the Default entry depends on the platform
-// On Windows and macOS we automatically apply Breeze/Breeze Dark depending on the system preference
-// On other platforms we apply a default KColorScheme
+// On KDE we apply a default KColorScheme
+// On other platforms we automatically apply Breeze/Breeze Dark depending on the system preference
 QString KColorSchemeManagerPrivate::automaticColorSchemePath() const
 {
-#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
-    const QString colorSchemeId = m_colorSchemeWatcher.systemPreference() == KColorSchemeWatcher::PreferDark ? getDarkColorScheme() : getLightColorScheme();
+    if (!m_colorSchemeWatcher) {
+        return QString();
+    }
+
+    const QString colorSchemeId = m_colorSchemeWatcher->systemPreference() == KColorSchemeWatcher::PreferDark ? getDarkColorScheme() : getLightColorScheme();
     return indexForSchemeId(colorSchemeId).data(KColorSchemeModel::PathRole).toString();
-#else
-    return QString();
-#endif
 }
 
 QIcon KColorSchemeManagerPrivate::createPreview(const QString &path)
@@ -114,16 +121,18 @@ KColorSchemeManager::~KColorSchemeManager()
 
 void KColorSchemeManager::init()
 {
-#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
-    QObject::connect(&d->m_colorSchemeWatcher, &KColorSchemeWatcher::systemPreferenceChanged, this, [this]() {
-        if (!d->m_activatedScheme.isEmpty()) {
-            // Don't override what has been manually set
-            return;
-        }
+    QString platformThemeSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
+    if (!isKdePlatformTheme() && platformThemeSchemePath.isEmpty()) {
+        d->m_colorSchemeWatcher.emplace();
+        QObject::connect(&*d->m_colorSchemeWatcher, &KColorSchemeWatcher::systemPreferenceChanged, this, [this]() {
+            if (!d->m_activatedScheme.isEmpty()) {
+                // Don't override what has been manually set
+                return;
+            }
 
-        d->activateSchemeInternal(d->automaticColorSchemePath());
-    });
-#endif
+            d->activateSchemeInternal(d->automaticColorSchemePath());
+        });
+    }
 
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup cg(config, QStringLiteral("UiSettings"));
@@ -138,7 +147,7 @@ void KColorSchemeManager::init()
         // QPalette for dark theme, but end up mixing it also with Breeze light
         // that is going to be used as a fallback for apps using KColorScheme.
         // BUG: 447029
-        schemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
+        schemePath = platformThemeSchemePath;
         if (schemePath.isEmpty()) {
             schemePath = d->automaticColorSchemePath();
         }

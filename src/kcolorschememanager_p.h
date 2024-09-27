@@ -30,7 +30,6 @@ public:
     QString automaticColorSchemePath() const;
     QModelIndex indexForSchemeId(const QString &id) const;
 
-#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
     const QString &getLightColorScheme() const
     {
         return m_lightColorScheme;
@@ -40,10 +39,9 @@ public:
         return m_darkColorScheme;
     }
 
-    QString m_lightColorScheme = QStringLiteral("Breeze");
+    QString m_lightColorScheme = QStringLiteral("BreezeLight");
     QString m_darkColorScheme = QStringLiteral("BreezeDark");
-    KColorSchemeWatcher m_colorSchemeWatcher;
-#endif
+    std::optional<KColorSchemeWatcher> m_colorSchemeWatcher;
 };
 
 #endif
