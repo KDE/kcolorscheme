@@ -6,8 +6,7 @@ description = Classes to interact with KColorScheme.
 documentationinheaders = true
 
 headerdirs = .
-
-headers.fileextensions = "*.qdoc *.h"
+sourcedirs = .
 
 outputformats = HTML
 
