@@ -147,8 +147,7 @@ void KColorSchemeManager::init()
         // QPalette for dark theme, but end up mixing it also with Breeze light
         // that is going to be used as a fallback for apps using KColorScheme.
         // BUG: 447029
-        schemePath = platformThemeSchemePath;
-        if (schemePath.isEmpty()) {
+        if (platformThemeSchemePath.isEmpty()) {
             schemePath = d->automaticColorSchemePath();
         }
     } else {
@@ -156,7 +155,10 @@ void KColorSchemeManager::init()
         schemePath = index.data(KColorSchemeModel::PathRole).toString();
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
     }
-    d->activateSchemeInternal(schemePath);
+
+    if (!schemePath.isEmpty()) {
+        d->activateSchemeInternal(schemePath);
+    }
 }
 
 QAbstractItemModel *KColorSchemeManager::model() const
