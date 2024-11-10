@@ -44,7 +44,7 @@ public:
     /*!
      * Construct a "default" stateful brush. For such an instance, all
      * overloads of KStatefulBrush::brush will return a default brush (i.e.
-     * <tt>QBrush()</tt>).
+     * QBrush()).
      */
     explicit KStatefulBrush();
 
@@ -97,7 +97,6 @@ public:
     /*! Construct a copy of another KStatefulBrush. */
     KStatefulBrush(const KStatefulBrush &);
 
-    /*! Destructor */
     ~KStatefulBrush();
 
     /*! Standard assignment operator */

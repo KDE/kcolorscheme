@@ -1,4 +1,4 @@
-include($KDE_DOCS/global/qt-module-defaults-online.qdocconf)
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
 
 project = KColorScheme
 description = Classes to interact with KColorScheme.
@@ -14,6 +14,6 @@ depends += \
     qtcore \
     qtgui \
     qtwidgets \
-    kconfig \
+    kconfigcore \
     kguiaddons \
     kconfigwidgets
