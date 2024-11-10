@@ -306,9 +306,11 @@ public:
 
     /*!
      * Returns the contrast for borders as a floating point value.
-     * \param config pointer to the config from which to read the contrast
+     *
+     * \a config pointer to the config from which to read the contrast
      * setting. If null, the application's color scheme will be used
      *   (either the system default or one set by KColorSchemeManager).
+     *
      * Returns the contrast (between 0.0 for minimum and 1.0 for maximum
      *         contrast)
      */
@@ -330,10 +332,11 @@ public:
      * Retrieve the requested shade color, using the specified color as the
      * base color and the specified contrast.
      *
-     * \param contrast Amount roughly specifying the contrast by which to
+     * \a contrast Amount roughly specifying the contrast by which to
      * adjust the base color, between -1.0 and 1.0 (values between 0.0 and 1.0
      * correspond to the value from KColorScheme::contrastF)
-     * \param chromaAdjust (optional) Amount by which to adjust the chroma of
+     *
+     * \a chromaAdjust (optional) Amount by which to adjust the chroma of
      * the shade (1.0 means no adjustment)
      *
      * \note Shades are chosen such that all shades would contrast with the
@@ -380,29 +383,29 @@ public:
      * Used to obtain the QPalette that will be used to set the application
      * palette from KDE Platform theme.
      *
-     * \param config KConfig from which to load the colors
+     * \a config KConfig from which to load the colors
      *
      * Returns the QPalette
      *
-     * \since KColorScheme 5.0
+     * \since 5.0
      */
     static QPalette createApplicationPalette(const KSharedConfigPtr &config);
 
     /*!
      * Used to check if the color scheme has a given set.
      *
-     * \param config KConfig from which to load the colors
+     * \a config KConfig from which to load the colors
      *
-     * \param set The color set to check for.
+     * \a set The color set to check for.
      *
      * Returns whether the color scheme has a given color set
      *
-     * \since KColorScheme 5.75
+     * \since 5.75
      */
     static bool isColorSetSupported(const KSharedConfigPtr &config, KColorScheme::ColorSet set);
 
     /*!
-     * \since KColorScheme 5.92
+     * \since 5.92
      */
     bool operator==(const KColorScheme &other) const;
 

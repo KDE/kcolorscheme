@@ -50,7 +50,7 @@ class KColorSchemeManagerPrivate;
  *
  * \sa KColorSchemeMenu::createMenu, KColorSchemeModel
  *
- * \since KColorScheme 5.0
+ * \since 5.0
  */
 class KCOLORSCHEME_EXPORT KColorSchemeManager : public QObject
 {
@@ -81,7 +81,7 @@ public:
      * returned is equivalent to going back to following the system scheme.
      * \sa model
      *
-     * \since KColorScheme 6.6
+     * \since 6.6
      */
     QModelIndex indexForSchemeId(const QString &id) const;
 
@@ -98,7 +98,7 @@ public:
      * Saves the color scheme to config file. The scheme is saved by default whenever it's changed.
      * Use this method when autosaving is turned off, see setAutosaveChanges().
      *
-     * \since KColorScheme 5.89
+     * \since 5.89
      */
     void saveSchemeToConfigFile(const QString &schemeName) const;
     /*!
@@ -107,7 +107,7 @@ public:
      * application is restarted.
      *
      * \param autosaveChanges Enables/Disables autosaving of the color scheme.
-     * \since KColorScheme 5.89
+     * \since 5.89
      */
     void setAutosaveChanges(bool autosaveChanges);
 
@@ -115,7 +115,7 @@ public:
      * Returns the id of the currently active scheme or an empty string if the default
      * scheme is active.
      *
-     * \since KColorScheme 5.107
+     * \since 5.107
      */
     QString activeSchemeId() const;
 
@@ -123,7 +123,7 @@ public:
      * Returns the name of the currently active scheme or an empty string if the default
      * scheme is active.
      *
-     * \since KColorScheme 6.6
+     * \since 6.6
      */
     QString activeSchemeName() const;
 
@@ -134,7 +134,7 @@ public:
      *
      * Returns color scheme manager for the current application instance
      *
-     * \since KColorScheme 6.6
+     * \since 6.6
      */
     static KColorSchemeManager *instance();
 

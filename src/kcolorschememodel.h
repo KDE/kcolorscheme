@@ -23,12 +23,18 @@ struct KColorSchemeModelPrivate;
  *
  * \brief A model listing the KColorSchemes available in the system.
  *
- * \since KColorScheme 5.84
+ * \since 5.84
  */
 class KColorSchemeModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
+    /*!
+     * \value NameRole
+     * \value IconRole
+     * \value PathRole
+     * \value IdRole
+     */
     enum Roles {
         NameRole = Qt::DisplayRole,
         IconRole = Qt::DecorationRole,
