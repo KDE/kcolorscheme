@@ -27,7 +27,7 @@ include(ECMQtDeclareLoggingCategory)
 include(ECMDeprecationSettings)
 include(CMakeDependentOption)
 
-set(REQUIRED_QT_VERSION 6.5.0)
+set(REQUIRED_QT_VERSION 6.6.0)
 find_package(Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Gui)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
