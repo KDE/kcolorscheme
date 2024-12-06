@@ -33,8 +33,21 @@ static int s_init = initKConfigGroupGui();
 
 constexpr int defaultSchemeRow = 0;
 
-static bool isKdePlatformTheme() {
-    return QGuiApplicationPrivate::platformTheme() && QGuiApplicationPrivate::platformTheme()->name() == QLatin1String("kde");
+static bool isKdePlatformTheme()
+{
+    if (!QGuiApplicationPrivate::platformTheme()) {
+        return false;
+    }
+
+    if (QGuiApplicationPrivate::platformTheme()->name() == QLatin1String("kde")) {
+        return true;
+    }
+
+    if (qgetenv("XDG_CURRENT_DESKTOP") == "KDE" && QGuiApplicationPrivate::platformTheme()->name() == QLatin1String("xdgdesktopportal")) {
+        return true;
+    }
+
+    return false;
 }
 
 void KColorSchemeManagerPrivate::activateSchemeInternal(const QString &colorSchemePath)
