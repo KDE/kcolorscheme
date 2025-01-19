@@ -48,7 +48,7 @@ find_package(KF6I18n ${KF_DEP_VERSION} REQUIRED)
 
 ecm_set_disabled_deprecation_versions(
     QT 6.8.0
-    KF 6.8.0
+    KF 6.10.0
 )
 
 add_definitions(-DTRANSLATION_DOMAIN=\"kcolorscheme6\")
