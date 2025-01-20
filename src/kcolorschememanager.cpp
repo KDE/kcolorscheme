@@ -242,7 +242,13 @@ void KColorSchemeManager::saveSchemeToConfigFile(const QString &schemeName) cons
 {
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup cg(config, QStringLiteral("UiSettings"));
-    cg.writeEntry("ColorScheme", KLocalizedString::removeAcceleratorMarker(schemeName));
+
+    if (schemeName.isEmpty() && !cg.hasDefault("ColorScheme")) {
+        cg.revertToDefault("ColorScheme");
+    } else {
+        cg.writeEntry("ColorScheme", KLocalizedString::removeAcceleratorMarker(schemeName));
+    }
+
     cg.sync();
 }
 
