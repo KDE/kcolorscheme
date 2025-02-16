@@ -131,6 +131,19 @@ static const SerializedColors defaultViewColors = {
     {  39, 174,  96 }  // Positive
 };
 
+static const SerializedColors defaultSidebarColors = {
+    { 239, 240, 241 }, // Background
+    { 227, 229, 231 }, // Alternate
+    {  35,  38, 41  }, // Normal
+    { 112, 125, 138 }, // Inactive
+    {  61, 174, 233 }, // Active
+    {  41, 128, 185 }, // Link
+    { 155,  89, 182 }, // Visited
+    { 218,  68,  83 }, // Negative
+    { 246, 116,   0 }, // Neutral
+    {  39, 174,  96 }  // Positive
+};
+
 static const SerializedColors defaultWindowColors = {
     { 239, 240, 241 }, // Background
     { 227, 229, 231 }, // Alternate
@@ -325,6 +338,10 @@ KColorSchemePrivate::KColorSchemePrivate(const KSharedConfigPtr &config, QPalett
     case KColorScheme::View:
         groupName = QStringLiteral("Colors:View");
         defaultColors = defaultViewColors;
+        break;
+    case KColorScheme::Sidebar:
+        groupName = QStringLiteral("Colors:sidebar");
+        defaultColors = defaultSidebarColors;
         break;
     }
 
@@ -558,6 +575,8 @@ bool KColorScheme::isColorSetSupported(const KSharedConfigPtr &config, KColorSch
     switch (set) {
         case View:
             return config->hasGroup(QStringLiteral("Colors:View"));
+        case Sidebar:
+            return config->hasGroup(QStringLiteral("Colors:Sidebar"));
         case Window:
             return config->hasGroup(QStringLiteral("Colors:Window"));
         case Button:

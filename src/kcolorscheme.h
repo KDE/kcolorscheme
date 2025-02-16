@@ -69,6 +69,12 @@ public:
          * If it contains things that can be selected, it is probably a View.
          */
         View,
+        /*
+         * Secondary Views.
+         *
+         * Similar to views but has less significance than the main content
+         */
+        Sidebar,
         /**
          * Non-editable window elements; for example, menus.
          *
