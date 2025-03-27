@@ -8,13 +8,14 @@
 #include "kcolorschememanager.h"
 #include "kcolorschememanager_p.h"
 
+#include "kcolorscheme.h"
 #include "kcolorschememodel.h"
 
+#include <KColorSchemeWatcher>
 #include <KConfigGroup>
 #include <KConfigGui>
 #include <KLocalizedString>
 #include <KSharedConfig>
-#include <kcolorscheme.h>
 
 #include <QDir>
 #include <QFileInfo>
@@ -63,17 +64,35 @@ void KColorSchemeManagerPrivate::activateSchemeInternal(const QString &colorSche
     }
 }
 
-// The meaning of the Default entry depends on the platform
-// On KDE we apply a default KColorScheme
-// On other platforms we automatically apply Breeze/Breeze Dark depending on the system preference
-QString KColorSchemeManagerPrivate::automaticColorSchemePath() const
+QString KColorSchemeManagerPrivate::automaticColorSchemeId() const
 {
     if (!m_colorSchemeWatcher) {
         return QString();
     }
 
-    const QString colorSchemeId = m_colorSchemeWatcher->systemPreference() == KColorSchemeWatcher::PreferDark ? getDarkColorScheme() : getLightColorScheme();
-    return indexForSchemeId(colorSchemeId).data(KColorSchemeModel::PathRole).toString();
+    switch (m_colorSchemeWatcher->systemPreference()) {
+    case KColorSchemeWatcher::PreferHighContrast:
+        return getDefaultColorScheme();
+    case KColorSchemeWatcher::PreferDark:
+        return getDarkColorScheme();
+    case KColorSchemeWatcher::PreferLight:
+    case KColorSchemeWatcher::NoPreference:
+        return getLightColorScheme();
+    };
+    return QString();
+}
+
+// The meaning of the Default entry depends on the platform
+// On KDE we apply a default KColorScheme
+// On other platforms we automatically apply Breeze/Breeze Dark depending on the system preference
+QString KColorSchemeManagerPrivate::automaticColorSchemePath() const
+{
+    const QString colorSchemeId = automaticColorSchemeId();
+    if (colorSchemeId.isEmpty()) {
+        return QString();
+    } else {
+        return indexForSchemeId(colorSchemeId).data(KColorSchemeModel::PathRole).toString();
+    }
 }
 
 QIcon KColorSchemeManagerPrivate::createPreview(const QString &path)
