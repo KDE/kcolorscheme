@@ -27,6 +27,7 @@ public:
 
     static QIcon createPreview(const QString &path);
     void activateSchemeInternal(const QString &colorSchemePath);
+    QString automaticColorSchemeId() const;
     QString automaticColorSchemePath() const;
     QModelIndex indexForSchemeId(const QString &id) const;
 
