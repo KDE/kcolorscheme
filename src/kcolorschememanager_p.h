@@ -27,9 +27,14 @@ public:
 
     static QIcon createPreview(const QString &path);
     void activateSchemeInternal(const QString &colorSchemePath);
+    QString automaticColorSchemeId() const;
     QString automaticColorSchemePath() const;
     QModelIndex indexForSchemeId(const QString &id) const;
 
+    const QString &getDefaultColorScheme() const
+    {
+        return m_defaultColorScheme;
+    }
     const QString &getLightColorScheme() const
     {
         return m_lightColorScheme;
@@ -39,6 +44,7 @@ public:
         return m_darkColorScheme;
     }
 
+    QString m_defaultColorScheme = QStringLiteral("Default");
     QString m_lightColorScheme = QStringLiteral("BreezeLight");
     QString m_darkColorScheme = QStringLiteral("BreezeDark");
     std::optional<KColorSchemeWatcher> m_colorSchemeWatcher;
