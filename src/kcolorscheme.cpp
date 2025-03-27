@@ -16,6 +16,8 @@
 
 #include <QBrush>
 #include <QColor>
+#include <QGuiApplication>
+#include <QPalette>
 
 // BEGIN StateEffects
 StateEffects::StateEffects(QPalette::ColorGroup state, const KSharedConfigPtr &config)
@@ -225,6 +227,9 @@ public:
     {
     }
 
+    void initFromConfig(const KSharedConfigPtr &config, QPalette::ColorGroup state, KColorScheme::ColorSet set);
+    void initFromSystemPalette(QPalette::ColorGroup state, KColorScheme::ColorSet set);
+
     QBrush background(KColorScheme::BackgroundRole) const;
     QBrush foreground(KColorScheme::ForegroundRole) const;
     QBrush decoration(KColorScheme::DecorationRole) const;
@@ -274,6 +279,15 @@ static DecorationColors loadDecorationColors(const KConfigGroup &group, const De
 }
 
 KColorSchemePrivate::KColorSchemePrivate(const KSharedConfigPtr &config, QPalette::ColorGroup state, KColorScheme::ColorSet set)
+{
+    if (config) {
+        initFromConfig(config, state, set);
+    } else {
+        initFromSystemPalette(state, set);
+    }
+}
+
+void KColorSchemePrivate::initFromConfig(const KSharedConfigPtr &config, QPalette::ColorGroup state, KColorScheme::ColorSet set)
 {
     QString groupName;
     SerializedColors defaultColors;
@@ -400,6 +414,66 @@ KColorSchemePrivate::KColorSchemePrivate(const KSharedConfigPtr &config, QPalett
                           _brushes.fg[KColorScheme::PositiveText].color());
 }
 
+void KColorSchemePrivate::initFromSystemPalette(QPalette::ColorGroup state, KColorScheme::ColorSet set)
+{
+    // Initialize the color scheme from the system palette. This is supposed
+    // to be done if high-contrast mode is active (on Windows).
+    const QPalette systemPalette = qApp->palette();
+
+    QColor foreground;
+    QColor background;
+    switch (set) {
+    case KColorScheme::Button:
+        foreground = systemPalette.color(state, QPalette::ButtonText);
+        background = systemPalette.color(state, QPalette::Button);
+        break;
+    case KColorScheme::Tooltip:
+        foreground = systemPalette.color(state, QPalette::ToolTipText);
+        background = systemPalette.color(state, QPalette::ToolTipBase);
+        break;
+    case KColorScheme::Selection:
+        foreground = systemPalette.color(state, QPalette::HighlightedText);
+        background = systemPalette.color(state, QPalette::Highlight);
+        break;
+    case KColorScheme::View:
+        foreground = systemPalette.color(state, QPalette::Text);
+        background = systemPalette.color(state, QPalette::Base);
+        break;
+    case KColorScheme::NColorSets:
+        qCWarning(KCOLORSCHEME) << "ColorSet::NColorSets is not a valid color set value to pass to KColorScheme::KColorScheme";
+        [[fallthrough]];
+    case KColorScheme::Window:
+    case KColorScheme::Complementary:
+    case KColorScheme::Header:
+        foreground = systemPalette.color(state, QPalette::WindowText);
+        background = systemPalette.color(state, QPalette::Window);
+        break;
+    }
+
+    _contrast = KColorScheme::contrastF({});
+
+    _brushes.fg[KColorScheme::NormalText] = foreground;
+    _brushes.fg[KColorScheme::InactiveText] = foreground;
+    _brushes.fg[KColorScheme::ActiveText] = foreground;
+    _brushes.fg[KColorScheme::LinkText] = systemPalette.color(state, QPalette::Link);
+    _brushes.fg[KColorScheme::VisitedText] = systemPalette.color(state, QPalette::LinkVisited);
+    _brushes.fg[KColorScheme::NegativeText] = foreground;
+    _brushes.fg[KColorScheme::NeutralText] = foreground;
+    _brushes.fg[KColorScheme::PositiveText] = foreground;
+
+    _brushes.bg[KColorScheme::NormalBackground] = background;
+    _brushes.bg[KColorScheme::AlternateBackground] = systemPalette.color(state, QPalette::AlternateBase);
+    _brushes.bg[KColorScheme::ActiveBackground] = background;
+    _brushes.bg[KColorScheme::LinkBackground] = background;
+    _brushes.bg[KColorScheme::VisitedBackground] = background;
+    _brushes.bg[KColorScheme::NegativeBackground] = background;
+    _brushes.bg[KColorScheme::NeutralBackground] = background;
+    _brushes.bg[KColorScheme::PositiveBackground] = background;
+
+    _brushes.deco[KColorScheme::FocusColor] = systemPalette.color(state, QPalette::Highlight);
+    _brushes.deco[KColorScheme::HoverColor] = systemPalette.color(state, QPalette::Highlight);
+}
+
 QBrush KColorSchemePrivate::background(KColorScheme::BackgroundRole role) const
 {
     if (role >= KColorScheme::NormalBackground && role < KColorScheme::NBackgroundRoles) {
@@ -456,7 +530,11 @@ bool KColorScheme::operator==(const KColorScheme &other) const
 // static
 qreal KColorScheme::contrastF(const KSharedConfigPtr &config)
 {
-    KConfigGroup g(config ? config : defaultConfig(), QStringLiteral("KDE"));
+    KSharedConfigPtr conf = config ? config : defaultConfig();
+    if (!conf) {
+        return 0.7;
+    }
+    KConfigGroup g(conf, QStringLiteral("KDE"));
     return 0.1 * g.readEntry("contrast", 7);
 }
 
@@ -579,7 +657,7 @@ bool KColorScheme::isColorSetSupported(const KSharedConfigPtr &config, KColorSch
 
 QPalette KColorScheme::createApplicationPalette(const KSharedConfigPtr &config)
 {
-    QPalette palette;
+    Q_ASSERT(config);
 
     static const QPalette::ColorGroup states[QPalette::NColorGroups] = {
         QPalette::Active, QPalette::Inactive, QPalette::Disabled
@@ -588,6 +666,7 @@ QPalette KColorScheme::createApplicationPalette(const KSharedConfigPtr &config)
     // TT thinks tooltips shouldn't use active, so we use our active colors for all states
     KColorScheme schemeTooltip(QPalette::Active, KColorScheme::Tooltip, config);
 
+    QPalette palette;
     for (auto state : states) {
         KColorScheme schemeView(state, KColorScheme::View, config);
         KColorScheme schemeWindow(state, KColorScheme::Window, config);
