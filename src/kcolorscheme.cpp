@@ -16,6 +16,8 @@
 
 #include <QBrush>
 #include <QColor>
+#include <QGuiApplication>
+#include <QPalette>
 
 // BEGIN StateEffects
 StateEffects::StateEffects(QPalette::ColorGroup state, const KSharedConfigPtr &config)
@@ -225,6 +227,8 @@ public:
     {
     }
 
+    void initFromSystemPalette(QPalette::ColorGroup state, KColorScheme::ColorSet set);
+
     QBrush background(KColorScheme::BackgroundRole) const;
     QBrush foreground(KColorScheme::ForegroundRole) const;
     QBrush decoration(KColorScheme::DecorationRole) const;
@@ -275,6 +279,10 @@ static DecorationColors loadDecorationColors(const KConfigGroup &group, const De
 
 KColorSchemePrivate::KColorSchemePrivate(const KSharedConfigPtr &config, QPalette::ColorGroup state, KColorScheme::ColorSet set)
 {
+    if (!config) {
+        initFromSystemPalette(state, set);
+        return;
+    }
     QString groupName;
     SerializedColors defaultColors;
     DecorationColors defaultDecoColors = defaultDecorationColors;
@@ -400,6 +408,58 @@ KColorSchemePrivate::KColorSchemePrivate(const KSharedConfigPtr &config, QPalett
                           _brushes.fg[KColorScheme::PositiveText].color());
 }
 
+void KColorSchemePrivate::initFromSystemPalette(QPalette::ColorGroup state, KColorScheme::ColorSet set)
+{
+    const QPalette systemPalette = qApp->palette();
+
+    QColor foreground;
+    QColor background;
+    switch (set) {
+    case KColorScheme::Button:
+        foreground = systemPalette.color(state, QPalette::ButtonText);
+        background = systemPalette.color(state, QPalette::Button);
+        break;
+    case KColorScheme::Selection:
+        foreground = systemPalette.color(state, QPalette::HighlightedText);
+        background = systemPalette.color(state, QPalette::Highlight);
+        break;
+    case KColorScheme::NColorSets:
+        qCWarning(KCOLORSCHEME) << "ColorSet::NColorSets is not a valid color set value to pass to KColorScheme::KColorScheme";
+        [[fallthrough]];
+    case KColorScheme::Window:
+    case KColorScheme::Tooltip:
+    case KColorScheme::Complementary:
+    case KColorScheme::Header:
+    case KColorScheme::View:
+        foreground = systemPalette.color(state, QPalette::WindowText);
+        background = systemPalette.color(state, QPalette::Window);
+        break;
+    }
+
+    _contrast = KColorScheme::contrastF({});
+
+    _brushes.fg[KColorScheme::NormalText] = foreground;
+    _brushes.fg[KColorScheme::InactiveText] = systemPalette.color(state, QPalette::PlaceholderText);
+    _brushes.fg[KColorScheme::ActiveText] = foreground;
+    _brushes.fg[KColorScheme::LinkText] = systemPalette.color(state, QPalette::Link);
+    _brushes.fg[KColorScheme::VisitedText] = systemPalette.color(state, QPalette::LinkVisited);
+    _brushes.fg[KColorScheme::NegativeText] = foreground;
+    _brushes.fg[KColorScheme::NeutralText] = foreground;
+    _brushes.fg[KColorScheme::PositiveText] = foreground;
+
+    _brushes.bg[KColorScheme::NormalBackground] = background;
+    _brushes.bg[KColorScheme::AlternateBackground] = background;
+    _brushes.bg[KColorScheme::ActiveBackground] = background;
+    _brushes.bg[KColorScheme::LinkBackground] = background;
+    _brushes.bg[KColorScheme::VisitedBackground] = background;
+    _brushes.bg[KColorScheme::NegativeBackground] = background;
+    _brushes.bg[KColorScheme::NeutralBackground] = background;
+    _brushes.bg[KColorScheme::PositiveBackground] = background;
+
+    _brushes.deco[KColorScheme::FocusColor] = systemPalette.color(state, QPalette::Highlight);
+    _brushes.deco[KColorScheme::HoverColor] = systemPalette.color(state, QPalette::Highlight);
+}
+
 QBrush KColorSchemePrivate::background(KColorScheme::BackgroundRole role) const
 {
     if (role >= KColorScheme::NormalBackground && role < KColorScheme::NBackgroundRoles) {
@@ -456,7 +516,11 @@ bool KColorScheme::operator==(const KColorScheme &other) const
 // static
 qreal KColorScheme::contrastF(const KSharedConfigPtr &config)
 {
-    KConfigGroup g(config ? config : defaultConfig(), QStringLiteral("KDE"));
+    KSharedConfigPtr conf = config ? config : defaultConfig();
+    if (!conf) {
+        return 0.7;
+    }
+    KConfigGroup g(conf, QStringLiteral("KDE"));
     return 0.1 * g.readEntry("contrast", 7);
 }
 
