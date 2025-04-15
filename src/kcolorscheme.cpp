@@ -657,8 +657,6 @@ bool KColorScheme::isColorSetSupported(const KSharedConfigPtr &config, KColorSch
 
 QPalette KColorScheme::createApplicationPalette(const KSharedConfigPtr &config)
 {
-    Q_ASSERT(config);
-
     static const QPalette::ColorGroup states[QPalette::NColorGroups] = {
         QPalette::Active, QPalette::Inactive, QPalette::Disabled
     };
