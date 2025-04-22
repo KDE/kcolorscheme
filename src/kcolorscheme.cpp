@@ -445,21 +445,21 @@ void KColorSchemePrivate::initFromSystemPalette(QPalette::ColorGroup state, KCol
 
     _brushes.fg[KColorScheme::NormalText] = foreground;
     _brushes.fg[KColorScheme::InactiveText] = foreground;
-    _brushes.fg[KColorScheme::ActiveText] = foreground;
+    _brushes.fg[KColorScheme::ActiveText] = systemPalette.color(state, QPalette::Highlight);
     _brushes.fg[KColorScheme::LinkText] = systemPalette.color(state, QPalette::Link);
     _brushes.fg[KColorScheme::VisitedText] = systemPalette.color(state, QPalette::LinkVisited);
-    _brushes.fg[KColorScheme::NegativeText] = foreground;
-    _brushes.fg[KColorScheme::NeutralText] = foreground;
-    _brushes.fg[KColorScheme::PositiveText] = foreground;
+    _brushes.fg[KColorScheme::NegativeText] = QColor(218, 68, 83);
+    _brushes.fg[KColorScheme::NeutralText] = QColor(246, 116, 0);
+    _brushes.fg[KColorScheme::PositiveText] = QColor(39, 174, 96);
 
     _brushes.bg[KColorScheme::NormalBackground] = background;
     _brushes.bg[KColorScheme::AlternateBackground] = systemPalette.color(state, QPalette::AlternateBase);
-    _brushes.bg[KColorScheme::ActiveBackground] = background;
-    _brushes.bg[KColorScheme::LinkBackground] = background;
-    _brushes.bg[KColorScheme::VisitedBackground] = background;
-    _brushes.bg[KColorScheme::NegativeBackground] = background;
-    _brushes.bg[KColorScheme::NeutralBackground] = background;
-    _brushes.bg[KColorScheme::PositiveBackground] = background;
+    _brushes.bg[KColorScheme::ActiveBackground] = KColorUtils::tint(background, _brushes.fg[KColorScheme::ActiveText].color());
+    _brushes.bg[KColorScheme::LinkBackground] = KColorUtils::tint(background, _brushes.fg[KColorScheme::LinkText].color());
+    _brushes.bg[KColorScheme::VisitedBackground] = KColorUtils::tint(background, _brushes.fg[KColorScheme::VisitedText].color());
+    _brushes.bg[KColorScheme::NegativeBackground] = KColorUtils::tint(background, _brushes.fg[KColorScheme::NegativeText].color());
+    _brushes.bg[KColorScheme::NeutralBackground] = KColorUtils::tint(background, _brushes.fg[KColorScheme::NeutralText].color());
+    _brushes.bg[KColorScheme::PositiveBackground] = KColorUtils::tint(background, _brushes.fg[KColorScheme::PositiveText].color());
 
     _brushes.deco[KColorScheme::FocusColor] = systemPalette.color(state, QPalette::Highlight);
     _brushes.deco[KColorScheme::HoverColor] = systemPalette.color(state, QPalette::Highlight);
