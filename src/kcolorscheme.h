@@ -91,6 +91,7 @@ public:
          * containing the selection does not have input focus.
          */
         Selection,
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 14)
         /**
          * Tooltips.
          *
@@ -98,8 +99,13 @@ public:
          * set when editing is not possible, but the Window set is deemed
          * inappropriate. "What's This" help is an excellent example, another
          * might be pop-up notifications (depending on taste).
+         *
+         * @deprecated since 6.14, use tooltip colors from QPalette.
          */
-        Tooltip,
+        Tooltip KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 14, "Use tooltip colors from QPalette"),
+#else
+        TooltipUnused,
+#endif
         /**
          * Complementary areas.
          *
