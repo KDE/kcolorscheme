@@ -125,11 +125,11 @@ public:
      *                       Exactly what this might be used for is somewhat harder to qualify;
      *                       it might be used for bookmarks, as a 'you can click here' indicator,
      *                       or to highlight recent content (i.e. in a most-recently-accessed
-     *                       list).
+     *                       list). Deprecated, use regular background color, optionally tinted with QPalette link color
      * \value VisitedBackground Fifth color; corresponds to visited links.\br\br
      *                          This can also be used to indicate "not recent" content, especially
      *                          when a color is needed to denote content which is "old" or
-     *                          "archival".
+     *                          "archival". Deprecated, use regular background color, optionally tinted with QPalette linkVisited color
      * \value NegativeBackground Sixth color; for example, errors, untrusted content, etc.
      * \value NeutralBackground Seventh color; for example, warnings, secure/encrypted content.
      * \value PositiveBackground Eighth color; for example, success messages, trusted content.
@@ -139,8 +139,16 @@ public:
         NormalBackground,
         AlternateBackground,
         ActiveBackground,
-        LinkBackground,
-        VisitedBackground,
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 20)
+        LinkBackground KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 20, "Use regular background color, optionally tinted with QPalette link color"),
+#else
+        LinkBackgroundUnused,
+#endif
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 20)
+        VisitedBackground KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 20, "Use regular background color, optionally tinted with QPalette linkVisited color"),
+#else
+        VisitedBackgroundUnused,
+#endif
         NegativeBackground,
         NeutralBackground,
         PositiveBackground,
@@ -180,12 +188,14 @@ public:
      *                 May also be used for other
      *                 clickable items or content that indicates relationships, items that
      *                 indicate somewhere the user can visit, etc.
+     *                 Deprecated, use link color from QPalette.
      * \value VisitedText Fifth color; used for (visited) links.\br\br
      *                    As with \c LinkText, may be used
      *                    for items that have already been "visited" or accessed. May also be
      *                    used to indicate "historical" (i.e. "old") items or information,
      *                    especially if \c InactiveText is being used in the same context to
      *                    express something different.
+     *                    Deprecated, use linkVisited color from QPalette.
      * \value NegativeText Sixth color; for example, errors, untrusted content, deletions,
      *                     etc.
      * \value NeutralText Seventh color; for example, warnings, secure/encrypted content.
@@ -197,8 +207,16 @@ public:
         NormalText,
         InactiveText,
         ActiveText,
-        LinkText,
-        VisitedText,
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 20)
+        LinkText KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 20, "Use link color from QPalette"),
+#else
+        LinkTextUnused,
+#endif
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 20)
+        VisitedText KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 20, "Use linkVisited color from QPalette"),
+#else
+        VisitedTextUnused,
+#endif
         NegativeText,
         NeutralText,
         PositiveText,
