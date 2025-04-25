@@ -81,6 +81,7 @@ public:
      *                set when editing is not possible, but the Window set is deemed
      *                inappropriate. "What's This" help is an excellent example, another
      *                might be pop-up notifications (depending on taste).
+     *                Deprecated, use tooltip colors from QPalette.
      * \value [since KColorScheme 5.19] Complementary Complementary areas.\br\br
      *                                  Some applications want some areas to have a different color scheme.
      *                                  Usually dark areas over a light theme. For instance the fullscreen UI
@@ -94,7 +95,11 @@ public:
         Window,
         Button,
         Selection,
-        Tooltip,
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 20)
+        Tooltip KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 20, "Use tooltip colors from QPalette"),
+#else
+        TooltipUnused,
+#endif
         Complementary,
         Header,
         NColorSets,
