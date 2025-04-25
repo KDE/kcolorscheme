@@ -154,6 +154,7 @@ public:
          * ActiveText, this should not be used for mouseover effects.
          */
         ActiveBackground,
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 14)
         /**
          * Fourth color; corresponds to (unvisited) links.
          *
@@ -161,16 +162,27 @@ public:
          * it might be used for bookmarks, as a 'you can click here' indicator,
          * or to highlight recent content (i.e. in a most-recently-accessed
          * list).
+         *
+         * @deprecated since 6.14, Use regular background color, optionally tinted with QPalette link color.
          */
-        LinkBackground,
+        LinkBackground KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 14, "Use regular background color, optionally tinted with QPalette link color"),
+#else
+        LinkBackgroundUnused,
+#endif
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 14)
         /**
          * Fifth color; corresponds to visited links.
          *
          * This can also be used to indicate "not recent" content, especially
          * when a color is needed to denote content which is "old" or
          * "archival".
+         *
+         * @deprecated since 6.14, Use regular background color, optionally tinted with QPalette linkVisited color.
          */
-        VisitedBackground,
+        VisitedBackground KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 14, "Use regular background color, optionally tinted with QPalette linkVisited color"),
+#else
+        VisitedBackgroundUnused,
+#endif
         /**
          * Sixth color; for example, errors, untrusted content, etc.
          */
@@ -223,20 +235,32 @@ public:
          * attention, etc. May be used as a hover color for clickable items.
          */
         ActiveText,
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 14)
         /**
          * Fourth color; use for (unvisited) links. May also be used for other
          * clickable items or content that indicates relationships, items that
          * indicate somewhere the user can visit, etc.
+         *
+         * @deprecated since 6.14, use link color from QPalette
          */
-        LinkText,
+        LinkText KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 14, "Use link color from QPalette"),
+#else
+        LinkTextUnused,
+#endif
+#if KCOLORSCHEME_ENABLE_DEPRECATED_SINCE(6, 14)
         /**
          * Fifth color; used for (visited) links. As with LinkText, may be used
          * for items that have already been "visited" or accessed. May also be
          * used to indicate "historical" (i.e. "old") items or information,
          * especially if InactiveText is being used in the same context to
          * express something different.
+         *
+         * @deprecated since 6.14, use linkVisited color from QPalette
          */
-        VisitedText,
+        VisitedText KCOLORSCHEME_ENUMERATOR_DEPRECATED_VERSION(6, 14, "Use linkVisited color from QPalette"),
+#else
+        VisitedTextUnused,
+#endif
         /**
          * Sixth color; for example, errors, untrusted content, deletions,
          * etc.
