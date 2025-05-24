@@ -37,3 +37,5 @@ qhp.KColorScheme.subprojects.classes.title = C++ Classes
 qhp.KColorScheme.subprojects.classes.indexTitle = KColorScheme C++ Classes
 qhp.KColorScheme.subprojects.classes.selectors = class fake:headerfile
 qhp.KColorScheme.subprojects.classes.sortPages = true
+
+tagfile = kcolorscheme.tags
