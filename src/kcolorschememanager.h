@@ -89,7 +89,7 @@ public:
      *       actually take an int.
      *
      * \sa model
-     * \since 6.6
+     * \since 6.17
      */
     int rowForCurrentScheme() const;
 
@@ -100,7 +100,7 @@ public:
      *       actually are an int.
      *
      * \sa model
-     * \since 6.6
+     * \since 6.17
      */
     void setRowForCurrentScheme(int newRow);
 
