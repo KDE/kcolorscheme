@@ -243,17 +243,17 @@ void KColorSchemeManager::activateScheme(const QModelIndex &index)
     const bool isDefaultEntry = index.data(KColorSchemeModel::PathRole).toString().isEmpty();
 
     if (index.isValid() && index.model() == d->model.get() && !isDefaultEntry) {
-        d->activateSchemeInternal(index.data(KColorSchemeModel::PathRole).toString());
         d->m_activatedScheme = index.data(KColorSchemeModel::IdRole).toString();
         if (d->m_autosaveChanges) {
             saveSchemeToConfigFile(index.data(KColorSchemeModel::NameRole).toString());
         }
+        d->activateSchemeInternal(index.data(KColorSchemeModel::PathRole).toString());
     } else {
-        d->activateSchemeInternal(d->automaticColorSchemePath());
         d->m_activatedScheme = QString();
         if (d->m_autosaveChanges) {
             saveSchemeToConfigFile(QString());
         }
+        d->activateSchemeInternal(d->automaticColorSchemePath());
     }
 }
 
