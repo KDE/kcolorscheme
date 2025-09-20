@@ -41,7 +41,7 @@ class KColorSchemeManagerPrivate;
  * QListView *view = new QListView(this);
  * view->setModel(manager->model());
  * connect(view, &QListView::activated, manager, [manager] (const QModelIndex &index) {
- *     manager->activateScheme(index.data(KColorSchemeModel::IdRole).toString());
+ *     manager->activateSchemeId(index.data(KColorSchemeModel::IdRole).toString());
  *  });
  *
  * \endcode
@@ -181,7 +181,7 @@ public Q_SLOTS:
      *
      * \since 6.19
      */
-    void activateScheme(const QString &schemeId);
+    void activateSchemeId(const QString &schemeId);
 
 private:
     class KCOLORSCHEME_NO_EXPORT GuardApplicationConstructor

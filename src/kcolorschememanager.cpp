@@ -274,7 +274,7 @@ void KColorSchemeManager::activateScheme(const QModelIndex &index)
     }
 }
 
-void KColorSchemeManager::activateScheme(const QString &schemeId)
+void KColorSchemeManager::activateSchemeId(const QString &schemeId)
 {
     auto index = d->indexForSchemeId(schemeId);
     const bool isDefaultEntry = index.data(KColorSchemeModel::IdRole).toString().isEmpty();
