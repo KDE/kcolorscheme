@@ -17,7 +17,6 @@
 #include <QBrush>
 #include <QColor>
 #include <QGuiApplication>
-#include <QPalette>
 
 // BEGIN StateEffects
 StateEffects::StateEffects(QPalette::ColorGroup state, const KSharedConfigPtr &config)
