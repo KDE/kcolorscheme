@@ -537,6 +537,16 @@ qreal KColorScheme::contrastF(const KSharedConfigPtr &config)
     return 0.1 * g.readEntry("contrast", 7);
 }
 
+qreal KColorScheme::frameContrast(const KSharedConfigPtr &config)
+{
+    KSharedConfigPtr conf = config ? config : defaultConfig();
+    if (!conf) {
+        return 0.2;
+    }
+    KConfigGroup g(conf, QStringLiteral("KDE"));
+    return g.readEntry("frameContrast", 0.2);
+}
+
 QBrush KColorScheme::background(BackgroundRole role) const
 {
     return d->background(role);
