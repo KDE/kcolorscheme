@@ -539,12 +539,14 @@ qreal KColorScheme::contrastF(const KSharedConfigPtr &config)
 
 qreal KColorScheme::frameContrast(const KSharedConfigPtr &config)
 {
+    // Keep this in sync with Kirigami platformtheme.cpp
+    const qreal default_value = 0.2;
     KSharedConfigPtr conf = config ? config : defaultConfig();
     if (!conf) {
-        return 0.2;
+        return default_value;
     }
     KConfigGroup g(conf, QStringLiteral("KDE"));
-    return g.readEntry("frameContrast", 0.2);
+    return g.readEntry("frameContrast", default_value);
 }
 
 QBrush KColorScheme::background(BackgroundRole role) const
