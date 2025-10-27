@@ -406,6 +406,20 @@ public:
     static bool isColorSetSupported(const KSharedConfigPtr &config, KColorScheme::ColorSet set);
 
     /*!
+     * Customizable frameContrast value that will override the contrast
+     * of frames in using styles (Breeze).
+     *
+     * \a config pointer to the config from which to read the contrast
+     * setting. If null, the application's color scheme will be used
+     *   (either the system default or one set by KColorSchemeManager).
+     *
+     * Returns the contrast (between 0.00 and 1.00)
+     *
+     * \since 6.20
+     */
+    static qreal frameContrast(const KSharedConfigPtr &config = KSharedConfigPtr());
+
+    /*!
      * \since 5.92
      */
     bool operator==(const KColorScheme &other) const;
