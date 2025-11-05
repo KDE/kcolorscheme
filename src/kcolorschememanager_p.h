@@ -12,8 +12,6 @@
 
 #include "kcolorschememodel.h"
 
-#include <KColorSchemeWatcher>
-
 class KColorSchemeManager;
 
 class KColorSchemeManagerPrivate
@@ -31,6 +29,12 @@ public:
     QString automaticColorSchemePath() const;
     QModelIndex indexForSchemeId(const QString &id) const;
 
+    enum ContrastPreference {
+        NoPreference,
+        HighContrast,
+    };
+    static ContrastPreference contrastPreference();
+
     const QString &getLightColorScheme() const
     {
         return m_lightColorScheme;
@@ -42,7 +46,6 @@ public:
 
     QString m_lightColorScheme = QStringLiteral("BreezeLight");
     QString m_darkColorScheme = QStringLiteral("BreezeDark");
-    std::optional<KColorSchemeWatcher> m_colorSchemeWatcher;
 };
 
 #endif

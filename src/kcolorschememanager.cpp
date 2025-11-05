@@ -11,7 +11,6 @@
 #include "kcolorscheme.h"
 #include "kcolorschememodel.h"
 
-#include <KColorSchemeWatcher>
 #include <KConfigGroup>
 #include <KConfigGui>
 #include <KLocalizedString>
@@ -24,9 +23,18 @@
 #include <QPainter>
 #include <QPointer>
 #include <QStandardPaths>
+#include <QStyleHints>
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+#include <QAccessibilityHints>
+#endif
 
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformtheme.h>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 // ensure we are linking KConfigGui, so QColor I/O from KConfig works
 KCONFIGGUI_EXPORT int initKConfigGroupGui();
@@ -66,20 +74,20 @@ void KColorSchemeManagerPrivate::activateSchemeInternal(const QString &colorSche
 
 QString KColorSchemeManagerPrivate::automaticColorSchemeId() const
 {
-    if (!m_colorSchemeWatcher) {
+    QString platformThemeSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
+    if (isKdePlatformTheme() || !platformThemeSchemePath.isEmpty()) {
         return QString();
     }
 
-    switch (m_colorSchemeWatcher->systemPreference()) {
-    case KColorSchemeWatcher::PreferHighContrast:
+    if (contrastPreference() == ContrastPreference::HighContrast) {
         return QString();
-    case KColorSchemeWatcher::PreferDark:
+    }
+
+    if (qGuiApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark) {
         return getDarkColorScheme();
-    case KColorSchemeWatcher::PreferLight:
-    case KColorSchemeWatcher::NoPreference:
-        return getLightColorScheme();
-    };
-    return QString();
+    }
+
+    return getLightColorScheme();
 }
 
 // The meaning of the Default entry depends on the platform
@@ -154,17 +162,21 @@ KColorSchemeManager::~KColorSchemeManager()
 void KColorSchemeManager::init()
 {
     QString platformThemeSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
-    if (!isKdePlatformTheme() && platformThemeSchemePath.isEmpty()) {
-        d->m_colorSchemeWatcher.emplace();
-        QObject::connect(&*d->m_colorSchemeWatcher, &KColorSchemeWatcher::systemPreferenceChanged, this, [this]() {
-            if (!d->m_activatedScheme.isEmpty()) {
-                // Don't override what has been manually set
-                return;
-            }
 
-            d->activateSchemeInternal(d->automaticColorSchemePath());
-        });
-    }
+    auto schemeChanged = [this] {
+        if (!d->m_activatedScheme.isEmpty()) {
+            // Don't override what has been manually set
+            return;
+        }
+
+        d->activateSchemeInternal(d->automaticColorSchemePath());
+    };
+
+    connect(qApp->styleHints(), &QStyleHints::colorSchemeChanged, this, schemeChanged);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+    connect(qApp->styleHints()->accessibility(), &QAccessibilityHints::contrastPreferenceChanged, this, schemeChanged);
+#endif
 
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup cg(config, QStringLiteral("UiSettings"));
@@ -319,6 +331,30 @@ QString KColorSchemeManager::activeSchemeId() const
 QString KColorSchemeManager::activeSchemeName() const
 {
     return d->indexForSchemeId(d->m_activatedScheme).data(KColorSchemeModel::NameRole).toString();
+}
+
+#ifdef Q_OS_WIN
+static bool isWindowsHighContrastModeActive()
+{
+    HIGHCONTRAST result;
+    result.cbSize = sizeof(HIGHCONTRAST);
+    if (SystemParametersInfo(SPI_GETHIGHCONTRAST, result.cbSize, &result, 0)) {
+        return (result.dwFlags & HCF_HIGHCONTRASTON);
+    }
+    return false;
+}
+#endif
+
+KColorSchemeManagerPrivate::ContrastPreference KColorSchemeManagerPrivate::contrastPreference()
+{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+    return qGuiApp->styleHints()->accessibility()->contrastPreference() == Qt::ContrastPreference::HighContrast ? HighContrast : NoPreference;
+#else
+#ifdef Q_OS_WIN
+    return isWindowsHighContrastModeActive() ? HighContrast : NoPreference;
+#endif
+#endif
+    return NoPreference;
 }
 
 KColorSchemeManager *KColorSchemeManager::instance()
