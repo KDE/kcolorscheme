@@ -13,23 +13,9 @@
 #include <QPalette>
 #include <QVariant>
 
+#include "kcolorschememanager_p.h"
+
 #include <array>
-
-#ifdef Q_OS_WIN
-#include "windows.h"
-#endif
-
-#ifdef Q_OS_WIN
-static bool isHighContrastModeActive()
-{
-    HIGHCONTRAST result;
-    result.cbSize = sizeof(HIGHCONTRAST);
-    if (SystemParametersInfo(SPI_GETHIGHCONTRAST, result.cbSize, &result, 0)) {
-        return (result.dwFlags & HCF_HIGHCONTRASTON);
-    }
-    return false;
-}
-#endif
 
 static KSharedConfigPtr defaultConfig()
 {
@@ -38,12 +24,11 @@ static KSharedConfigPtr defaultConfig()
     // Read from the application's color scheme file (as set by KColorSchemeManager).
     // If unset, this is equivalent to openConfig() and the system scheme is used.
     const auto colorSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
-#ifdef Q_OS_WIN
     // If no color scheme is set and high-contrast is active then use the system colors
-    if (colorSchemePath.isEmpty() && isHighContrastModeActive()) {
+    if (colorSchemePath.isEmpty() && KColorSchemeManagerPrivate::contrastPreference() == KColorSchemeManagerPrivate::HighContrast) {
         return {};
     }
-#endif
+
     if (!config || config->name() != colorSchemePath) {
         config = KSharedConfig::openConfig(colorSchemePath);
     }
