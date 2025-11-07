@@ -171,20 +171,13 @@ void KColorSchemeManager::init()
 
     const QString scheme = cg.readEntry("ColorScheme", QString());
     auto index = indexForSchemeId(scheme);
-    bool updateDeprecated = false;
     if (!scheme.isEmpty() && !index.isValid()) {
         // No sucess treating value as ID maybe it is a scheme name?
         // Until 6.16 we saved the scheme name instead of the id to ColorScheme
         index = indexForScheme(scheme);
-        updateDeprecated = true;
-    }
 
-    QString schemeId;
-    if (index.isValid()) {
-        schemeId = index.data(KColorSchemeModel::IdRole).toString();
-
-        if (updateDeprecated) {
-            saveSchemeIdToConfigFile(schemeId);
+        if (index.isValid()) {
+            saveSchemeIdToConfigFile(index.data(KColorSchemeModel::IdRole).toString());
         }
     }
 
