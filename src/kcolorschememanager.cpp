@@ -190,7 +190,7 @@ void KColorSchemeManager::init()
 
     QString schemePath;
 
-    if (schemeId.isEmpty()) {
+    if (scheme.isEmpty()) {
         // Color scheme might be already set from a platform theme
         // This is used for example by QGnomePlatform that can set color scheme
         // matching GNOME settings. This avoids issues where QGnomePlatform sets
