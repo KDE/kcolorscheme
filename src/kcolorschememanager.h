@@ -113,13 +113,13 @@ public:
     void saveSchemeToConfigFile(const QString &schemeName) const;
 #endif
 
-     /*!
-      * Saves the color scheme to config file. The scheme is saved by default whenever it's changed.
-      * Use this method when autosaving is turned off, see setAutosaveChanges().
-      *
-      * \since 6.19
-      */
-     void saveSchemeIdToConfigFile(const QString &schemeId) const;
+    /*!
+     * Saves the color scheme to config file. The scheme is saved by default whenever it's changed.
+     * Use this method when autosaving is turned off, see setAutosaveChanges().
+     *
+     * \since 6.19
+     */
+    void saveSchemeIdToConfigFile(const QString &schemeId) const;
     /*!
      * Sets color scheme autosaving. Default value is \c true.
      * If this is set to \c false, the scheme is not going to be remembered when the

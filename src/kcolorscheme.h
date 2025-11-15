@@ -8,8 +8,8 @@
 #ifndef KCOLORSCHEME_H
 #define KCOLORSCHEME_H
 
-#include <KSharedConfig>
 #include "kcolorscheme_export.h"
+#include <KSharedConfig>
 
 #include <QExplicitlySharedDataPointer>
 
