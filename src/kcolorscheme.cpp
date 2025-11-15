@@ -215,7 +215,7 @@ static const DecorationColors defaultDecorationColors = {
     { 147, 206, 233 }, // Hover
 };
 // END default colors
-// clang-format off
+// clang-format on
 
 //BEGIN KColorSchemePrivate
 class KColorSchemePrivate : public QSharedData
