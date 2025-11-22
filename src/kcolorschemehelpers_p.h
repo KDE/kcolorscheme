@@ -11,6 +11,7 @@
 
 #include <QCoreApplication>
 #include <QPalette>
+#include <QVariant>
 
 #include <array>
 
