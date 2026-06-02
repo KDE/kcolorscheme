@@ -1,6 +1,7 @@
 /*
     This file is part of the KDE project
     SPDX-FileCopyrightText: 2013 Martin Gräßlin <mgraesslin@kde.org>
+    SPDX-FileCopyrightText: 2026 Kai Uwe Broulik <kde@broulik.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -8,9 +9,35 @@
 #ifndef KCOLORSCHEMEMANAGER_P_H
 #define KCOLORSCHEMEMANAGER_P_H
 
+#include <QBrush>
+#include <QIconEngine>
+
 #include <memory>
 
 #include "kcolorschememodel.h"
+
+class KColorSchemeManager;
+
+class PreviewIconEngine : public QIconEngine
+{
+public:
+    explicit PreviewIconEngine(const QString &path);
+
+    void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
+    QIconEngine *clone() const override;
+
+    QSize actualSize(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
+    QPixmap pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
+    QPixmap scaledPixmap(const QSize &size, QIcon::Mode mode, QIcon::State state, qreal scale) override;
+
+private:
+    void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state, bool includeFrame);
+
+    QBrush m_window;
+    QBrush m_button;
+    QBrush m_view;
+    QBrush m_selection;
+};
 
 class KColorSchemeManagerPrivate
 {
