@@ -1,6 +1,7 @@
 /*
     This file is part of the KDE project
     SPDX-FileCopyrightText: 2013 Martin Gräßlin <mgraesslin@kde.org>
+    SPDX-FileCopyrightText: 2026 Kai Uwe Broulik <kde@broulik.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -59,6 +60,79 @@ static bool isKdePlatformTheme()
     return false;
 }
 
+PreviewIconEngine::PreviewIconEngine(const QString &path)
+    : QIconEngine()
+{
+    KSharedConfigPtr schemeConfig = KSharedConfig::openConfig(path, KConfig::SimpleConfig);
+
+    KColorScheme activeWindow(QPalette::Active, KColorScheme::Window, schemeConfig);
+    m_window = activeWindow.background();
+    KColorScheme activeButton(QPalette::Active, KColorScheme::Button, schemeConfig);
+    m_button = activeButton.background();
+    KColorScheme activeView(QPalette::Active, KColorScheme::View, schemeConfig);
+    m_view = activeView.background();
+    KColorScheme activeSelection(QPalette::Active, KColorScheme::Selection, schemeConfig);
+    m_selection = activeSelection.background();
+}
+
+QIconEngine *PreviewIconEngine::clone() const
+{
+    return new PreviewIconEngine(*this);
+}
+
+QSize PreviewIconEngine::actualSize(const QSize &size, QIcon::Mode mode, QIcon::State state)
+{
+    Q_UNUSED(mode);
+    Q_UNUSED(state);
+    const int squareSize = std::min(size.width(), size.height());
+    return QSize(squareSize, squareSize);
+}
+
+QPixmap PreviewIconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state)
+{
+    return scaledPixmap(size, mode, state, 1.0 /*scale*/);
+}
+
+QPixmap PreviewIconEngine::scaledPixmap(const QSize &size, QIcon::Mode mode, QIcon::State state, qreal scale)
+{
+    QPixmap pixmap(size * scale);
+    pixmap.setDevicePixelRatio(scale);
+    pixmap.fill(Qt::black);
+
+    QPainter p(&pixmap);
+    paint(&p, QRect(QPoint(0, 0), size), mode, state, false /*includeFrame*/); // skip frame, we already filled the pixmap black.
+
+    return pixmap;
+}
+
+void PreviewIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
+{
+    paint(painter, rect, mode, state, true /*includeFrame*/);
+}
+
+void PreviewIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state, bool includeFrame)
+{
+    QRect adjustedRect(QPoint(0, 0), actualSize(rect.size(), mode, state));
+    adjustedRect.moveCenter(rect.center());
+
+    if (includeFrame) {
+        painter->fillRect(adjustedRect, Qt::black);
+    }
+
+    painter->save();
+    painter->translate(adjustedRect.topLeft());
+
+    const int margin = 1;
+    const int itemSize = adjustedRect.width() / 2 - margin;
+
+    painter->fillRect(margin, margin, itemSize, itemSize, m_window);
+    painter->fillRect(margin + itemSize, margin, itemSize, itemSize, m_button);
+    painter->fillRect(margin, margin + itemSize, itemSize, itemSize, m_view);
+    painter->fillRect(margin + itemSize, margin + itemSize, itemSize, itemSize, m_selection);
+
+    painter->restore();
+}
+
 void KColorSchemeManagerPrivate::activateSchemeInternal(const QString &colorSchemePath)
 {
     // hint for plasma-integration to synchronize the color scheme with the window manager/compositor
@@ -105,33 +179,7 @@ QString KColorSchemeManagerPrivate::automaticColorSchemePath() const
 
 QIcon KColorSchemeManagerPrivate::createPreview(const QString &path)
 {
-    KSharedConfigPtr schemeConfig = KSharedConfig::openConfig(path, KConfig::SimpleConfig);
-    QIcon result;
-
-    KColorScheme activeWindow(QPalette::Active, KColorScheme::Window, schemeConfig);
-    KColorScheme activeButton(QPalette::Active, KColorScheme::Button, schemeConfig);
-    KColorScheme activeView(QPalette::Active, KColorScheme::View, schemeConfig);
-    KColorScheme activeSelection(QPalette::Active, KColorScheme::Selection, schemeConfig);
-
-    auto pixmap = [&](int size) {
-        QPixmap pix(size, size);
-        pix.fill(Qt::black);
-        QPainter p;
-        p.begin(&pix);
-        const int itemSize = size / 2 - 1;
-        p.fillRect(1, 1, itemSize, itemSize, activeWindow.background());
-        p.fillRect(1 + itemSize, 1, itemSize, itemSize, activeButton.background());
-        p.fillRect(1, 1 + itemSize, itemSize, itemSize, activeView.background());
-        p.fillRect(1 + itemSize, 1 + itemSize, itemSize, itemSize, activeSelection.background());
-        p.end();
-        result.addPixmap(pix);
-    };
-    // 16x16
-    pixmap(16);
-    // 24x24
-    pixmap(24);
-
-    return result;
+    return QIcon(new PreviewIconEngine(path));
 }
 
 KColorSchemeManagerPrivate::KColorSchemeManagerPrivate()
