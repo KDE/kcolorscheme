@@ -69,8 +69,8 @@ private Q_SLOTS:
         checkBackgroundRole(KColorScheme::AlternateBackground);
 
 #define checkForegroundRole(role)                                                                                                                              \
-    QCOMPARE(activeScheme.foreground(role).color(), QColor(colorSet, role + KColorScheme::NBackgroundRoles, QPalette::Active));                                \
-    QCOMPARE(inactiveScheme.foreground(role).color(), QColor(colorSet, role + KColorScheme::NBackgroundRoles, QPalette::Inactive));
+    QCOMPARE(activeScheme.foreground(role).color(), QColor(colorSet, role + static_cast<int>(KColorScheme::NBackgroundRoles), QPalette::Active));              \
+    QCOMPARE(inactiveScheme.foreground(role).color(), QColor(colorSet, role + static_cast<int>(KColorScheme::NBackgroundRoles), QPalette::Inactive));
 
         checkForegroundRole(KColorScheme::NormalText);
         checkForegroundRole(KColorScheme::InactiveText);
@@ -83,9 +83,10 @@ private Q_SLOTS:
 
 #define checkDecorationRole(role)                                                                                                                              \
     QCOMPARE(activeScheme.decoration(role).color(),                                                                                                            \
-             QColor(colorSet, role + KColorScheme::NBackgroundRoles + KColorScheme::NForegroundRoles, QPalette::Active));                                      \
-    QCOMPARE(inactiveScheme.decoration(role).color(),                                                                                                          \
-             QColor(colorSet, role + KColorScheme::NBackgroundRoles + KColorScheme::NForegroundRoles, QPalette::Inactive));
+             QColor(colorSet, role + static_cast<int>(KColorScheme::NBackgroundRoles) + static_cast<int>(KColorScheme::NForegroundRoles), QPalette::Active));  \
+    QCOMPARE(                                                                                                                                                  \
+        inactiveScheme.decoration(role).color(),                                                                                                               \
+        QColor(colorSet, role + static_cast<int>(KColorScheme::NBackgroundRoles) + static_cast<int>(KColorScheme::NForegroundRoles), QPalette::Inactive));
 
         checkDecorationRole(KColorScheme::FocusColor);
         checkDecorationRole(KColorScheme::HoverColor);
