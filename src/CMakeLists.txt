@@ -57,7 +57,7 @@ target_link_libraries(KF6ColorScheme
     KF6::I18n # For action and widget texts
 )
 
-ecm_generate_headers(KColorScheme_HEADERS
+ecm_generate_headers(KColorScheme_CamelCase_HEADERS
   HEADER_NAMES
   KColorScheme
   KColorSchemeManager
@@ -72,6 +72,7 @@ install(TARGETS KF6ColorScheme EXPORT KF6ColorSchemeTargets ${KF_INSTALL_TARGETS
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/kcolorscheme_export.h
   ${KColorScheme_HEADERS}
+  ${KColorScheme_CamelCase_HEADERS}
   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KColorScheme COMPONENT Devel
 )
 
@@ -82,3 +83,16 @@ ecm_qt_install_logging_categories(
 )
 
 ecm_generate_qdoc(KF6ColorScheme kcolorscheme.qdocconf)
+
+ecm_add_installed_library_check(KF6ColorScheme
+    PACKAGE_NAME "KF6ColorScheme"
+    PACKAGE_TARGET_NAMESPACE "KF6::"
+)
+
+ecm_installed_library_check_include_strings(KF6ColorScheme
+    HEADERS ${KColorScheme_CamelCase_HEADERS}
+)
+
+ecm_installed_library_check_version_preprocessor_macros(KF6ColorScheme
+    PREFIX KCOLORSCHEME
+)
