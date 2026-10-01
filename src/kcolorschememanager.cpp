@@ -16,6 +16,7 @@
 #include <KLocalizedString>
 #include <KSharedConfig>
 
+#include <QAccessibilityHints>
 #include <QDir>
 #include <QFileInfo>
 #include <QGuiApplication>
@@ -25,16 +26,8 @@
 #include <QStandardPaths>
 #include <QStyleHints>
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
-#include <QAccessibilityHints>
-#endif
-
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformtheme.h>
-
-#ifdef Q_OS_WIN
-#include <windows.h>
-#endif
 
 // ensure we are linking KConfigGui, so QColor I/O from KConfig works
 KCONFIGGUI_EXPORT int initKConfigGroupGui();
@@ -174,9 +167,7 @@ void KColorSchemeManager::init()
 
     connect(qApp->styleHints(), &QStyleHints::colorSchemeChanged, this, schemeChanged);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
     connect(qApp->styleHints()->accessibility(), &QAccessibilityHints::contrastPreferenceChanged, this, schemeChanged);
-#endif
 
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup cg(config, QStringLiteral("UiSettings"));
@@ -333,28 +324,9 @@ QString KColorSchemeManager::activeSchemeName() const
     return d->indexForSchemeId(d->m_activatedScheme).data(KColorSchemeModel::NameRole).toString();
 }
 
-#ifdef Q_OS_WIN
-static bool isWindowsHighContrastModeActive()
-{
-    HIGHCONTRAST result;
-    result.cbSize = sizeof(HIGHCONTRAST);
-    if (SystemParametersInfo(SPI_GETHIGHCONTRAST, result.cbSize, &result, 0)) {
-        return (result.dwFlags & HCF_HIGHCONTRASTON);
-    }
-    return false;
-}
-#endif
-
 KColorSchemeManagerPrivate::ContrastPreference KColorSchemeManagerPrivate::contrastPreference()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
     return qGuiApp->styleHints()->accessibility()->contrastPreference() == Qt::ContrastPreference::HighContrast ? HighContrast : NoPreference;
-#else
-#ifdef Q_OS_WIN
-    return isWindowsHighContrastModeActive() ? HighContrast : NoPreference;
-#endif
-#endif
-    return NoPreference;
 }
 
 KColorSchemeManager *KColorSchemeManager::instance()
