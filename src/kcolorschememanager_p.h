@@ -12,8 +12,6 @@
 
 #include "kcolorschememodel.h"
 
-class KColorSchemeManager;
-
 class KColorSchemeManagerPrivate
 {
 public:
